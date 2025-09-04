@@ -1,0 +1,34 @@
+cabal-version: 3.0
+
+name: changelogs
+version: 0.1.0.0
+synopsis: Utilities for processing cardano-ledger changelogs
+author: Neil Mayhew <neil.mayhew@iohk.io>
+copyright: 2025 IOG
+license: Apache-2.0
+
+tested-with:
+  ghc ==8.10.7 || ==9.2.8 || ==9.4.8 || ==9.6.7 || ==9.8.4 || ==9.10.2 || ==9.12.2
+
+common language
+  default-language: Haskell2010
+common warnings
+  ghc-options: -Wall -Wcompat -Wunused-packages -Werror
+common rts
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+
+flag compat
+  description: Use the foldable1-classes-compat package
+
+executable changelogs
+  import: language, warnings, rts
+  main-is: changelogs.hs
+  other-modules: Changelog
+  build-depends:
+    , base
+    , cmark
+    , mtl
+    , optparse-applicative
+    , pretty-simple
+    , terminal-size
+    , text
