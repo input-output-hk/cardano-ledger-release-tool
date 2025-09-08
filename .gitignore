@@ -1,0 +1,24 @@
+# Cabal
+dist-newstyle/
+cabal.project.local
+.ghc.environment.*
+
+# Editors
+*~
+TAGS
+tags
+*.temp
+.dir-locals.el
+
+# Emacs auto-generated Emacs-lisp code
+auto/
+
+# Nix artifacts
+result*
+
+# direnv
+.envrc
+.direnv
+
+# Misc
+.pre-commit-config.yaml
