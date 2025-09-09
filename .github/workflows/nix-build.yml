@@ -33,5 +33,5 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: changelogs-${{ steps.system-details.outputs.system }}-${{ steps.system-details.outputs.machine }}
+        name: cardano-ledger-release-tool-${{ steps.system-details.outputs.system }}-${{ steps.system-details.outputs.machine }}
         path: ${{ steps.build.outputs.artifacts }}
