@@ -32,7 +32,9 @@ let
     name = project.args.name;
     paths = staticBinaries;
   };
+
 in
-  lib.attrsets.recursiveUpdate
-    (project.flake { })
-    { packages.default = defaultPackage; }
+
+lib.attrsets.recursiveUpdate (project.flake { }) {
+  packages.default = defaultPackage;
+}

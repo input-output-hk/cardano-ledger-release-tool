@@ -3,7 +3,6 @@
 {-# LANGUAGE RecordWildCards #-}
 
 import Changelog
-
 import Data.Foldable (for_)
 import Data.Text.Lazy (Text, unpack)
 import Options.Applicative
