@@ -13,6 +13,8 @@
       flake = false;
     };
 
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+
     flake-utils.url = "github:numtide/flake-utils";
 
     nixpkgs.follows = "haskell-nix/nixpkgs";
