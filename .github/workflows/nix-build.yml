@@ -21,7 +21,7 @@ jobs:
     - name: Build
       id: build
       run: |
-        nix build --accept-flake-config
+        nix build --accept-flake-config .#static
         echo "artifacts=$(find -L result -type f)" >>"$GITHUB_OUTPUT"
 
     - name: Record system details

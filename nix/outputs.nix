@@ -21,20 +21,18 @@ let
     };
   });
 
-  staticBinaries =
-    builtins.concatMap
-      (p: lib.attrsets.attrValues p.components.exes)
-      (builtins.filter
-        (p: p ? "isLocal" && p.isLocal)
-        (lib.attrsets.attrValues project.projectCross.musl64.hsPkgs));
-
-  defaultPackage = pkgs.symlinkJoin {
-    name = project.args.name;
-    paths = staticBinaries;
+  static = pkgs.symlinkJoin {
+    name = "${project.args.name}-static";
+    paths =
+      builtins.concatMap
+        (p: lib.attrsets.attrValues p.components.exes)
+        (builtins.filter
+          (p: p ? "isLocal" && p.isLocal)
+          (lib.attrsets.attrValues project.projectCross.musl64.hsPkgs));
   };
 
 in
 
 lib.attrsets.recursiveUpdate (project.flake { }) {
-  packages.default = defaultPackage;
+  packages.default = static;
 }
