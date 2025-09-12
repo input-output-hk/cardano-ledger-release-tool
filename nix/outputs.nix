@@ -10,8 +10,10 @@ let
     overlays = [ haskell-nix.overlay ];
   };
 
+  name = "cardano-ledger-release-tool";
+
   project = pkgs.haskell-nix.cabalProject' ({ ... }: {
-    name = "cardano-ledger-release-tool";
+    inherit name;
     src = lib.cleanSource ../.;
     compiler-nix-name = lib.mkDefault "ghc967";
     flake.variants = {
@@ -27,7 +29,7 @@ let
   packages = flake.packages;
 
   static = pkgs.symlinkJoin {
-    inherit (project.args) name;
+    inherit name;
     paths =
       builtins.concatMap
         (p: lib.attrsets.attrValues p.components.exes)
