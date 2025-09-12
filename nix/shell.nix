@@ -92,7 +92,7 @@ let
 in
 
 project.projectVariants.${ghc}.shellFor {
-  name = "cardano-ledger-release-tool-shell-${project.args.compiler-nix-name}";
+  name = "${project.args.name}-shell-${project.args.compiler-nix-name}";
 
   nativeBuildInputs = lib.concatLists [
     commonPkgs

@@ -22,6 +22,7 @@ jobs:
       id: build
       run: |
         nix build --accept-flake-config .#static
+        echo "name=$(nix derivation show ./result | jq -r .[].env.name)" >>"$GITHUB_OUTPUT"
         echo "artifacts=$(find -L result -type f)" >>"$GITHUB_OUTPUT"
 
     - name: Record system details
@@ -33,5 +34,5 @@ jobs:
     - name: Upload artifacts
       uses: actions/upload-artifact@v4
       with:
-        name: cardano-ledger-release-tool-${{ steps.system-details.outputs.system }}-${{ steps.system-details.outputs.machine }}
+        name: ${{ steps.build.outputs.name }}-${{ steps.system-details.outputs.system }}-${{ steps.system-details.outputs.machine }}
         path: ${{ steps.build.outputs.artifacts }}

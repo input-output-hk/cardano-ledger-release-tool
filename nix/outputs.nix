@@ -27,7 +27,7 @@ let
   packages = flake.packages;
 
   static = pkgs.symlinkJoin {
-    name = "${project.args.name}-static";
+    inherit (project.args) name;
     paths =
       builtins.concatMap
         (p: lib.attrsets.attrValues p.components.exes)
