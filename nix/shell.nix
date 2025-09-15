@@ -4,11 +4,10 @@ let
 
   toolVersions = {
     cabal = "latest";
-    cabal-fmt = "latest";
+    cabal-gild = "latest";
     fourmolu = "latest";
     haskell-language-server = "latest";
     hlint = "latest";
-    stylish-haskell = "latest";
   };
 
   toolVariants =
@@ -17,8 +16,9 @@ let
       project.projectVariants;
 
   toolOverrides = {
-    ghc910.cabal-fmt = toolVariants.ghc96.cabal-fmt; # cabal-fmt not buildable with ghc9102
-    ghc912.cabal-fmt = toolVariants.ghc96.cabal-fmt; # cabal-fmt not buildable with ghc9122
+    # Compiler+tool combinations, eg
+    # ghc910.foobar = toolVariants.ghc96.foobar; # foobar not buildable with ghc910
+    # ghc912.xyzzy = project.projectVariants.ghc912.tool "xyzzy" "1.2.3";
   };
 
   tools = toolVariants.${ghc} // (toolOverrides.${ghc} or { });
@@ -28,9 +28,9 @@ let
     src = lib.cleanSources ../.;
 
     hooks = {
-      cabal-fmt = {
-        enable = false;
-        package = tools.cabal-fmt;
+      cabal-gild = {
+        enable = true;
+        package = tools.cabal-gild;
       };
       fourmolu = {
         enable = true;
@@ -39,10 +39,6 @@ let
       hlint = {
         enable = true;
         package = tools.hlint;
-      };
-      stylish-haskell = {
-        enable = false;
-        package = tools.stylish-haskell;
       };
       nixpkgs-fmt = {
         enable = true;
@@ -57,11 +53,10 @@ let
 
   commonPkgs = [
     tools.cabal
-    tools.cabal-fmt
+    tools.cabal-gild
     tools.fourmolu
     tools.haskell-language-server
     tools.hlint
-    tools.stylish-haskell
 
     pkgs.nixpkgs-fmt
     pkgs.shellcheck
