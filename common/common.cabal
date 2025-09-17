@@ -1,7 +1,7 @@
 cabal-version: 3.0
-name: changelogs
+name: common
 version: 0.1.0.0
-synopsis: Utilities for processing cardano-ledger changelogs
+synopsis: Library for cardano-ledger-release-tool
 author: Neil Mayhew <neil.mayhew@iohk.io>
 copyright: 2025 IOG
 license: Apache-2.0
@@ -18,18 +18,8 @@ common warnings
     -Wunused-packages
     -Werror
 
-flag compat
-  description: Use the foldable1-classes-compat package
-
 library
   import: language, warnings
-  exposed-modules: Changelogs
-  other-modules: Changelog
+  exposed-modules: Options
   build-depends:
-    base,
-    cmark,
-    common,
-    mtl,
-    optparse-applicative,
-    pretty-simple,
-    text,
+    base

@@ -1,2 +1,4 @@
 packages:
+  common
   changelogs
+  main

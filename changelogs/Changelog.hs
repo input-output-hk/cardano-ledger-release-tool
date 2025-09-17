@@ -1,7 +1,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Changelog where
+module Changelog (
+  Changelog (..),
+  parseChangelog,
+  renderChangelog,
+) where
 
 import CMark
 import Control.Monad ((<=<), (>=>))
@@ -17,9 +21,6 @@ import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 
 -- CMark helper functions
-
-nodePos :: Node -> Maybe PosInfo
-nodePos (Node mp _ _) = mp
 
 nodeType :: Node -> NodeType
 nodeType (Node _ ty _) = ty
