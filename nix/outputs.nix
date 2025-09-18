@@ -28,15 +28,22 @@ let
 
   packages = flake.packages;
 
+  dynamic = pkgs.symlinkJoin {
+    inherit name;
+    paths = exesFrom project;
+  };
+
   static = pkgs.symlinkJoin {
     inherit name;
-    paths =
-      builtins.concatMap
-        (p: lib.attrsets.attrValues p.components.exes)
-        (builtins.filter
-          (p: p.isLocal or false)
-          (lib.attrsets.attrValues project.projectCross.musl64.hsPkgs));
+    paths = exesFrom project.projectCross.musl64;
   };
+
+  exesFrom = prj:
+    builtins.concatMap
+      (p: lib.attrsets.attrValues p.components.exes)
+      (builtins.filter
+        (p: p.isLocal or false)
+        (lib.attrsets.attrValues prj.hsPkgs));
 
   devShells = lib.attrsets.mapAttrs
     (ghcName: _: mkShell ghcName)
@@ -53,6 +60,6 @@ let
 in
 
 flake // {
-  packages = packages // { inherit static; };
+  packages = packages // { default = dynamic; inherit dynamic static; };
   devShells = devShells // { default = devShells.${defaultVariant}; };
 }
