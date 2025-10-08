@@ -52,3 +52,8 @@ jobs:
 
     - name: Run tests
       run: cabal test all
+
+    - name: Lint changelogs
+      run: |
+        cabal run -- clrt changelogs -i $(git ls-files '*CHANGELOG.md')
+        git diff --exit-code
