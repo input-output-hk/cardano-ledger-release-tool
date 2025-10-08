@@ -33,3 +33,4 @@ library
     optparse-applicative,
     pretty-simple,
     text,
+    unliftio,
