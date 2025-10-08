@@ -44,7 +44,7 @@ options =
                 <> metavar "FILE"
           stdoutParser =
             -- Write output to stdout
-            pure $ const TL.putStrLn
+            pure $ const TL.putStr
         optWriteFile <- inplaceParser <|> fileParser <|> stdoutParser
         optBulletHierarchy <-
           strOption $
