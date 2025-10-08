@@ -1,4 +1,4 @@
-cabal-version: 3.0
+cabal-version: 3.12
 name: changelogs
 version: 0.1.0.0
 synopsis: Utilities for processing cardano-ledger changelogs
@@ -24,7 +24,11 @@ flag compat
 library
   import: language, warnings
   exposed-modules: Changelogs
-  other-modules: Changelog
+  other-modules:
+    Changelog
+    PackageInfo_changelogs
+
+  autogen-modules: PackageInfo_changelogs
   build-depends:
     base,
     cmark,
