@@ -3,8 +3,10 @@
 {-# LANGUAGE RecordWildCards #-}
 
 import Data.Foldable (fold)
+import Data.Version (showVersion)
 import Options (Options (..))
 import Options.Applicative
+import PackageInfo_cardano_ledger_release_tool (version)
 
 import qualified Changelogs
 import qualified System.Console.Terminal.Size as TS
@@ -17,7 +19,7 @@ main = do
     customExecParser
       (prefs $ columns cols)
       ( info
-          ( helper <*> do
+          ( helper <*> simpleVersioner (showVersion version) <*> do
               optVerbose <-
                 switch $
                   help "Produce verbose output"
