@@ -34,7 +34,7 @@ common rts
     -rtsopts
     -with-rtsopts=-N
 
-executable cardano-ledger-release-tool
+executable clrt
   import: language, warnings, rts
   hs-source-dirs: src
   main-is: main.hs
