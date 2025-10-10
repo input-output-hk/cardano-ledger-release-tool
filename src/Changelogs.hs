@@ -2,7 +2,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Changelogs (name, subcmd, version) where
+module Changelogs (subcmd) where
 
 import Changelog
 import Control.Monad (when, (<=<))
@@ -11,9 +11,7 @@ import Data.Either (isLeft)
 import Data.Functor ((<&>))
 import Data.Text.Lazy (Text, unpack)
 import Data.Traversable (for)
-import Data.Version (showVersion)
 import Options.Applicative
-import PackageInfo_changelogs (name, version)
 import System.Exit (exitFailure)
 import System.IO (hPrint, stderr)
 import UnliftIO.Exception (tryAny)
@@ -31,7 +29,7 @@ data Options = Options
 options :: ParserInfo Options
 options =
   info
-    ( helper <*> simpleVersioner (showVersion version) <*> do
+    ( helper <*> do
         let
           inplaceParser =
             flag' TL.writeFile $
