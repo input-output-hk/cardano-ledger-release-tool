@@ -5,11 +5,16 @@
 module Changelogs (subcmd) where
 
 import Changelog
-import Data.Foldable (for_)
+import Control.Monad (when, (<=<))
+import Data.Bitraversable (bitraverse)
+import Data.Either (isLeft)
 import Data.Functor ((<&>))
 import Data.Text.Lazy (Text, unpack)
+import Data.Traversable (for)
 import Options.Applicative
-import System.IO (stderr)
+import System.Exit (exitFailure)
+import System.IO (hPrint, stderr)
+import UnliftIO.Exception (tryAny)
 
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.IO as TL
@@ -39,7 +44,7 @@ options =
                 <> metavar "FILE"
           stdoutParser =
             -- Write output to stdout
-            pure $ const TL.putStrLn
+            pure $ const TL.putStr
         optWriteFile <- inplaceParser <|> fileParser <|> stdoutParser
         optBulletHierarchy <-
           strOption $
@@ -61,8 +66,10 @@ subcmd :: Mod CommandFields (Global.Options -> IO ())
 subcmd =
   command "changelogs" $
     options <&> \Options {..} Global.Options {} -> do
-      for_ optChangelogs $ \fp -> do
-        let
-          printError e = TL.hPutStrLn stderr $ TL.pack fp <> ": " <> e
-          writeLog = optWriteFile fp . renderChangelog optBulletHierarchy
-        either printError writeLog . parseChangelog =<< TL.readFile fp
+      failure <- fmap (any isLeft) . for optChangelogs $ \fp -> do
+        bitraverse (hPrint stderr) pure <=< tryAny $ do
+          let
+            throwError e = errorWithoutStackTrace $ fp <> ": " <> TL.unpack e
+            writeLog = optWriteFile fp . renderChangelog optBulletHierarchy
+          either throwError writeLog . parseChangelog =<< TL.readFile fp
+      when failure exitFailure

@@ -1,0 +1,58 @@
+cabal-version: 3.12
+name: cardano-ledger-release-tool
+version: 0.1.1.0
+author: Neil Mayhew <neil.mayhew@iohk.io>
+copyright: 2025 IOG
+license: Apache-2.0
+synopsis:
+  Assist with release policy for cardano-ledger
+
+description:
+  This is a tool that is used by the cardano-ledger team to simplify and enforce
+  releasing and versioning policy
+
+tested-with:
+  ghc ==8.10.7 || ==9.2.8 || ==9.4.8 || ==9.6.7 || ==9.8.4 || ==9.10.2 || ==9.12.2
+
+common language
+  default-language: Haskell2010
+  other-extensions:
+    ApplicativeDo
+    OverloadedStrings
+    RecordWildCards
+
+common warnings
+  ghc-options:
+    -Wall
+    -Wcompat
+    -Wunused-packages
+    -Werror
+
+common rts
+  ghc-options:
+    -threaded
+    -rtsopts
+    -with-rtsopts=-N
+
+executable clrt
+  import: language, warnings, rts
+  hs-source-dirs: src
+  main-is: main.hs
+  other-modules:
+    Changelog
+    Changelogs
+    Options
+    PackageInfo_cardano_ledger_release_tool
+
+  autogen-modules:
+    PackageInfo_cardano_ledger_release_tool
+
+  build-depends:
+    base,
+    cmark,
+    mtl,
+    optparse-applicative,
+    pretty-simple,
+    terminal-size,
+    text,
+    unliftio,
