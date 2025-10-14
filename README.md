@@ -2,6 +2,8 @@
 
 Utility for managing releases of [cardano-ledger](https://github.com/IntersectMBO/cardano-ledger)
 
+## Usage
+
 ```
 Cardano Ledger release tool
 
@@ -15,9 +17,9 @@ Available commands:
   changelogs               Parse and lint changelog files
 ```
 
-The subcommands are described below.
+## Commands
 
-## `changelogs`
+### `changelogs`
 
 Parse and re-render a changelog, as a form of linting; the output is the canonical representation of the changelog. Using `--inplace` followed by `git diff --exit-code` will determine whether the changelog needs to be changed.
 
@@ -35,3 +37,20 @@ Available options:
   -b,--bullets CHARS       Use CHARS for the levels of bullets (default: *-+)
   CHANGELOG ...            Changelog files to process
 ```
+
+## Building the Code
+
+During development, use `nix develop` and `cabal build`.
+
+To build a static binary, use `nix build .#static`.
+
+Make sure you have the following in `~/.config/nix/nix.conf` or `/etc/nix/nix.conf`:
+
+```ini
+experimental-features = nix-command flakes
+accept-flake-config = true
+```
+
+## Making a Release
+
+See [RELEASING.md](RELEASING.md).
