@@ -4,8 +4,11 @@ on:
   pull_request:
   push:
     branches: ["master", "main"]
-    tags:
+    tags: ["*"]
   workflow_dispatch:
+    inputs:
+      version:
+        type: string
 
 jobs:
   build:
@@ -23,19 +26,47 @@ jobs:
 
     - name: Build
       id: build
-      run: |
-        nix build --accept-flake-config .#static
-        echo "name=$(nix derivation show ./result | jq -r .[].env.name)" >>"$GITHUB_OUTPUT"
-        echo "artifacts=$(find -L result -type f)" >>"$GITHUB_OUTPUT"
+      run: nix build --accept-flake-config .#static
 
-    - name: Record system details
-      id: system-details
+    - name: Record result
+      id: result
       run: |
-        echo "system=$(uname -s)" >>"$GITHUB_OUTPUT"
-        echo "machine=$(uname -m)" >>"$GITHUB_OUTPUT"
+        derivation=$(nix derivation show ./result | jq -r .[].env.name)
+        artifact=$derivation-$(uname -s)-$(uname -m)
+        products=$(find -L result -type f)
+        echo "artifact=$artifact" >>"$GITHUB_OUTPUT"
+        echo "products=$products" >>"$GITHUB_OUTPUT"
 
-    - name: Upload artifacts
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: ${{ steps.build.outputs.name }}-${{ steps.system-details.outputs.system }}-${{ steps.system-details.outputs.machine }}
-        path: ${{ steps.build.outputs.artifacts }}
+        name: ${{ steps.result.outputs.artifact }}
+        path: ${{ steps.result.outputs.products }}
+
+    - if: github.ref_type == 'tag' || inputs.version
+      name: Create release content
+      id: release
+      run: |
+        version='${{ github.ref_type == 'tag' && github.ref_name || inputs.version }}'
+        release=${{ steps.result.outputs.artifact }}-$version
+        archive=$release.tgz
+        mkdir "$release" && cp -p ${{ steps.result.outputs.products }} "$release"
+        tar -czf "$archive" "$release"
+        notes=$release.md
+        cat <<EOF >"$notes"
+        See [CHANGELOG.md](${{ github.server_url }}/${{ github.repository }}/blob/main/CHANGELOG.md)
+        EOF
+        echo "version=$version" >>"$GITHUB_OUTPUT"
+        echo "archive=$archive" >>"$GITHUB_OUTPUT"
+        echo "notes=$notes" >>"$GITHUB_OUTPUT"
+
+    - if: steps.release.outputs.version
+      name: Create release
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: ${{ steps.release.outputs.version }}
+        files: ${{ steps.release.outputs.archive }}
+        body_path: ${{ steps.release.outputs.notes }}
+        target_commitish: ${{ github.sha }}
+        fail_on_unmatched_files: true
+        draft: true
