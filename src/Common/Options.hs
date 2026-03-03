@@ -1,4 +1,4 @@
-module Options where
+module Common.Options where
 
 newtype Options = Options
   { optVerbose :: Bool

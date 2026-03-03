@@ -2,13 +2,13 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
+import Common.Options (Options (..))
 import Data.Foldable (fold)
 import Data.Version (showVersion)
-import Options (Options (..))
 import Options.Applicative
 import PackageInfo_cardano_ledger_release_tool (version)
 
-import qualified Changelogs
+import qualified Changelogs.Command as Changelogs
 import qualified System.Console.Terminal.Size as TS
 
 main :: IO ()

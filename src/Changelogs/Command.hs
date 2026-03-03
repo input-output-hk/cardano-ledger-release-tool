@@ -2,9 +2,9 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Changelogs (subcmd) where
+module Changelogs.Command (subcmd) where
 
-import Changelog
+import Changelogs.Types
 import Control.Monad (when, (<=<))
 import Data.Bitraversable (bitraverse)
 import Data.Either (isLeft)
@@ -16,9 +16,9 @@ import System.Exit (exitFailure)
 import System.IO (hPrint, stderr)
 import UnliftIO.Exception (tryAny)
 
+import qualified Common.Options as Common
 import qualified Data.Text.Lazy as TL
 import qualified Data.Text.Lazy.IO as TL
-import qualified Options as Global
 
 data Options = Options
   { optChangelogs :: [String]
@@ -62,10 +62,10 @@ options =
     )
     (progDesc "Parse and lint changelog files")
 
-subcmd :: Mod CommandFields (Global.Options -> IO ())
+subcmd :: Mod CommandFields (Common.Options -> IO ())
 subcmd =
   command "changelogs" $
-    options <&> \Options {..} Global.Options {} -> do
+    options <&> \Options {..} Common.Options {} -> do
       failure <- fmap (any isLeft) . for optChangelogs $ \fp -> do
         bitraverse (hPrint stderr) pure <=< tryAny $ do
           let
