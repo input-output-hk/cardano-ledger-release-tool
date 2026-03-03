@@ -7,10 +7,11 @@ Utility for managing releases of [cardano-ledger](https://github.com/IntersectMB
 ```
 Cardano Ledger release tool
 
-Usage: cardano-ledger-release-tool [-v|--verbose] COMMAND
+Usage: clrt [-v|--verbose] COMMAND
 
 Available options:
   -h,--help                Show this help text
+  -V,--version             Show version information
   -v,--verbose             Produce verbose output
 
 Available commands:
@@ -24,9 +25,8 @@ Available commands:
 Parse and re-render a changelog, as a form of linting; the output is the canonical representation of the changelog. Using `--inplace` followed by `git diff --exit-code` will determine whether the changelog needs to be changed.
 
 ```
-Usage: cardano-ledger-release-tool changelogs
-         [(-i|--inplace) | (-o|--output FILE)] [-b|--bullets CHARS]
-         CHANGELOG ...
+Usage: clrt changelogs [(-i|--inplace) | (-o|--output FILE)] [-b|--bullets CHARS]
+                       CHANGELOG ...
 
   Parse and lint changelog files
 

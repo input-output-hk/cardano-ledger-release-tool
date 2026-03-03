@@ -2,6 +2,10 @@
 
 Version history for `cardano-ledger-release-tool`
 
+## 0.2.0.0
+
+* Add `-V` as a short-option form of `--version`
+
 ## 0.1.1.0
 
 * Add a `--version` option

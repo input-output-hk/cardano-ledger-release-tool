@@ -15,11 +15,19 @@ main :: IO ()
 main = do
   cols <- maybe 100 TS.width <$> TS.size
 
+  let
+    versionOption v =
+      infoOption (showVersion v) $
+        help "Show version information"
+          <> short 'V'
+          <> long "version"
+          <> hidden
+
   (subcmd, opts) <-
     customExecParser
       (prefs $ columns cols)
       ( info
-          ( helper <*> simpleVersioner (showVersion version) <*> do
+          ( helper <*> versionOption version <*> do
               optVerbose <-
                 switch $
                   help "Produce verbose output"
