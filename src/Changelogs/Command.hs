@@ -26,26 +26,32 @@ data Options = Options
   , optBulletHierarchy :: Text
   }
 
+modifyInPlace :: FilePath -> Text -> IO ()
+modifyInPlace = TL.writeFile
+
+writeToFile :: FilePath -> FilePath -> Text -> IO ()
+writeToFile outputFile _sourceFile = TL.writeFile outputFile
+
+writeToStdout :: FilePath -> Text -> IO ()
+writeToStdout _sourceFile = TL.putStr
+
 options :: ParserInfo Options
 options =
   info
     ( helper <*> do
-        let
-          inplaceParser =
-            flag' TL.writeFile $
-              help "Modify files in-place"
-                <> short 'i'
-                <> long "inplace"
-          fileParser =
-            fmap (const . TL.writeFile) . strOption $
-              help "Write output to FILE"
-                <> short 'o'
-                <> long "output"
-                <> metavar "FILE"
-          stdoutParser =
-            -- Write output to stdout
-            pure $ const TL.putStr
-        optWriteFile <- inplaceParser <|> fileParser <|> stdoutParser
+        optWriteFile <-
+          asum
+            [ flag' modifyInPlace $
+                help "Modify files in-place"
+                  <> short 'i'
+                  <> long "inplace"
+            , fmap writeToFile . strOption $
+                help "Write output to FILE"
+                  <> short 'o'
+                  <> long "output"
+                  <> metavar "FILE"
+            , pure writeToStdout
+            ]
         optBulletHierarchy <-
           strOption $
             help "Use CHARS for the levels of bullets"
