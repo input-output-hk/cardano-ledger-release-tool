@@ -31,7 +31,7 @@ jobs:
     - name: Record result
       id: result
       run: |
-        derivation=$(nix derivation show ./result | jq -r .[].env.name)
+        derivation=$(nix derivation show ./result | jq -r '(.derivations // .).[].env.name')
         artifact=$derivation-$(uname -s)-$(uname -m)
         products=$(find -L result -type f)
         echo "artifact=$artifact" >>"$GITHUB_OUTPUT"
