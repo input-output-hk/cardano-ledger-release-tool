@@ -43,16 +43,24 @@ executable cleret
     Changelogs.Types
     Common.Options
     PackageInfo_cardano_ledger_release_tool
+    Workflow.Command
 
   autogen-modules:
     PackageInfo_cardano_ledger_release_tool
 
   build-depends:
     base,
+    cabal-plan,
     cmark,
+    containers,
+    directory,
+    filepath,
+    microlens,
+    microlens-aeson,
     mtl,
     optparse-applicative,
     pretty-simple,
     terminal-size,
     text,
     unliftio,
+    yaml,
