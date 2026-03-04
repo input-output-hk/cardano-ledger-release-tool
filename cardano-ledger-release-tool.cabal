@@ -34,7 +34,7 @@ common rts
     -rtsopts
     -with-rtsopts=-N
 
-executable clrt
+executable cleret
   import: language, warnings, rts
   hs-source-dirs: src
   main-is: main.hs

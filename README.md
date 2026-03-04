@@ -2,12 +2,14 @@
 
 Utility for managing releases of [cardano-ledger](https://github.com/IntersectMBO/cardano-ledger)
 
+The executable is named `cleret` which is derived from **C**ardano **Le**dger **Re**lease **T**ool. It's also the name of a brand of squeegee, which seems appropriate for a tool that's used to make things squeaky clean.
+
 ## Usage
 
 ```
 Cardano Ledger release tool
 
-Usage: clrt [-v|--verbose] COMMAND
+Usage: cleret [-v|--verbose] COMMAND
 
 Available options:
   -h,--help                Show this help text
@@ -25,8 +27,8 @@ Available commands:
 Parse and re-render a changelog, as a form of linting; the output is the canonical representation of the changelog. Using `--inplace` followed by `git diff --exit-code` will determine whether the changelog needs to be changed.
 
 ```
-Usage: clrt changelogs [(-i|--inplace) | (-o|--output FILE)] [-b|--bullets CHARS]
-                       CHANGELOG ...
+Usage: cleret changelogs [(-i|--inplace) | (-o|--output FILE)] [-b|--bullets CHARS]
+                         CHANGELOG ...
 
   Parse and lint changelog files
 
