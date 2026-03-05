@@ -39,6 +39,7 @@ executable cleret
   hs-source-dirs: src
   main-is: main.hs
   other-modules:
+    Cabal.Command
     Changelogs.Command
     Changelogs.Types
     Common.Options

@@ -6,6 +6,7 @@ import Data.Version (showVersion)
 import Options.Applicative
 import PackageInfo_cardano_ledger_release_tool (version)
 
+import qualified Cabal.Command as Cabal
 import qualified Changelogs.Command as Changelogs
 import qualified System.Console.Terminal.Size as TS
 import qualified Workflow.Command as Workflow
@@ -27,7 +28,8 @@ main = do
       ( helper
           <*> versionOption version
           <*> subparsers
-            [ Changelogs.subcmd
+            [ Cabal.subcmd
+            , Changelogs.subcmd
             , Workflow.subcmd
             ]
       )

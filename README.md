@@ -16,6 +16,7 @@ Available options:
   -V,--version             Show version information
 
 Available commands:
+  cabal                    Operations on a Cabal project
   changelogs               Operations on the changelogs of a project
   workflow                 Operations on the GitHub workflows of a Cabal project
 ```
@@ -88,6 +89,40 @@ Available options:
 ```
 
 Outputs the differences between the actual and the expected, and exits with a non-zero status if there are differences.
+
+### `cabal`
+
+```
+Usage: cleret cabal COMMAND
+
+  Operations on a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+
+Available commands:
+  targets                  List the targets in a Cabal project
+```
+
+#### `cabal targets`
+
+```
+Usage: cleret cabal targets [-v|--verbose] [-p|--project DIR] [-i|--include TYPE]
+                            [-x|--exclude TYPE] [PACKAGE ...]
+
+  List the targets in a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Produce verbose output
+  -p,--project DIR         The project directory, or a subdirectory of it
+                           (default: .)
+  -i,--include TYPE        Include targets of type TYPE (repeatable; one of: lib,
+                           flib, exe, test, bench, setup)
+  -x,--exclude TYPE        Exclude targets of type TYPE (repeatable; one of: lib,
+                           flib, exe, test, bench, setup)
+  PACKAGE ...              Show targets for PACKAGE ... (default: all packages)
+```
 
 ## Building the Code
 
