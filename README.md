@@ -161,6 +161,9 @@ Available options:
   -p,--prefetch            Prefetch inputs to check hash correctness
   PROJECT-FILE             Cabal project file (default: cabal.project)
   LOCK-FILE                Nix flake lock file (default: flake.lock)
+
+Relevant authentication tokens found in the nix configuration will be used when
+prefetching, in case any of the inputs are private
 ```
 
 ## Building the Code
