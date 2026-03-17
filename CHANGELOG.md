@@ -5,6 +5,7 @@ Version history for `cardano-ledger-release-tool`
 ## 0.4.0.0
 
 * Add a `failures` group of subcommands
+* Handle private repos in the `nix hashes` subcommand
 
 ## 0.3.0.0
 
