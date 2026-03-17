@@ -43,6 +43,7 @@ executable cleret
     Changelogs.Command
     Changelogs.Types
     Common.Options
+    Nix.Command
     PackageInfo_cardano_ledger_release_tool
     Workflow.Command
 
@@ -50,7 +51,9 @@ executable cleret
     PackageInfo_cardano_ledger_release_tool
 
   build-depends:
+    aeson,
     base,
+    bytestring,
     cabal-plan,
     cmark,
     containers,
@@ -61,7 +64,10 @@ executable cleret
     mtl,
     optparse-applicative,
     pretty-simple,
+    process,
+    regex-applicative,
     terminal-size,
     text,
+    time,
     unliftio,
     yaml,

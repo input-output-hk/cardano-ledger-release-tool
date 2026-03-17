@@ -8,6 +8,7 @@ import PackageInfo_cardano_ledger_release_tool (version)
 
 import qualified Cabal.Command as Cabal
 import qualified Changelogs.Command as Changelogs
+import qualified Nix.Command as Nix
 import qualified System.Console.Terminal.Size as TS
 import qualified Workflow.Command as Workflow
 
@@ -30,6 +31,7 @@ main = do
           <*> subparsers
             [ Cabal.subcmd
             , Changelogs.subcmd
+            , Nix.subcmd
             , Workflow.subcmd
             ]
       )
