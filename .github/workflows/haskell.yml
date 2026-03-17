@@ -20,10 +20,10 @@ jobs:
     name: Build with GHC ${{ matrix.ghc }}
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: ~/.cabal
         key: ${{ runner.os }}-${{ matrix.ghc }}-${{ hashFiles('**/*.cabal') }}-${{ hashFiles('**/cabal.project') }}

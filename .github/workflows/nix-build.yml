@@ -17,7 +17,7 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Install nix
       uses: cachix/install-nix-action@v31
@@ -38,7 +38,7 @@ jobs:
         echo "products=$products" >>"$GITHUB_OUTPUT"
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ steps.result.outputs.artifact }}
         path: ${{ steps.result.outputs.products }}
