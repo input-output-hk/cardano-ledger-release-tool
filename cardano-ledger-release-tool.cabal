@@ -34,25 +34,34 @@ common rts
     -rtsopts
     -with-rtsopts=-N
 
-executable clrt
+executable cleret
   import: language, warnings, rts
   hs-source-dirs: src
   main-is: main.hs
   other-modules:
-    Changelog
-    Changelogs
-    Options
+    Cabal.Command
+    Changelogs.Command
+    Changelogs.Types
+    Common.Options
     PackageInfo_cardano_ledger_release_tool
+    Workflow.Command
 
   autogen-modules:
     PackageInfo_cardano_ledger_release_tool
 
   build-depends:
     base,
+    cabal-plan,
     cmark,
+    containers,
+    directory,
+    filepath,
+    microlens,
+    microlens-aeson,
     mtl,
     optparse-applicative,
     pretty-simple,
     terminal-size,
     text,
     unliftio,
+    yaml,

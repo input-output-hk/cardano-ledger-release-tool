@@ -1,7 +1,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Changelog (
+module Changelogs.Types (
   Changelog (..),
   parseChangelog,
   renderChangelog,
