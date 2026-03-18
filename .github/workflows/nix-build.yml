@@ -17,12 +17,10 @@ jobs:
     steps:
 
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v6
 
     - name: Install nix
       uses: cachix/install-nix-action@v31
-      with:
-        nix_path: nixpkgs=channel:nixos-unstable
 
     - name: Build
       id: build
@@ -31,14 +29,14 @@ jobs:
     - name: Record result
       id: result
       run: |
-        derivation=$(nix derivation show ./result | jq -r .[].env.name)
+        derivation=$(nix derivation show ./result | jq -r '(.derivations // .).[].env.name')
         artifact=$derivation-$(uname -s)-$(uname -m)
         products=$(find -L result -type f)
         echo "artifact=$artifact" >>"$GITHUB_OUTPUT"
         echo "products=$products" >>"$GITHUB_OUTPUT"
 
     - name: Upload artifact
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v7
       with:
         name: ${{ steps.result.outputs.artifact }}
         path: ${{ steps.result.outputs.products }}
