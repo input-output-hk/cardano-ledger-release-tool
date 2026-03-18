@@ -9,15 +9,16 @@ on:
 
 jobs:
   build:
-
     runs-on: ${{ matrix.os }}
+
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
         ghc: ['9.6.7', '9.8.4', '9.10.3', '9.12.2']
       fail-fast: false
 
-    name: Build with GHC ${{ matrix.ghc }}
+    name: Build with GHC ${{ matrix.ghc }} on ${{ matrix.os }}
+
     steps:
     - name: Checkout
       uses: actions/checkout@v6
