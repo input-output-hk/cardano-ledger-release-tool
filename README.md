@@ -4,6 +4,15 @@ Utility for managing releases of [cardano-ledger](https://github.com/IntersectMB
 
 The executable is named `cleret` which is derived from **C**ardano **Le**dger **Re**lease **T**ool. It's also the name of a brand of squeegee, which seems appropriate for a tool that's used to make things squeaky clean.
 
+## Installing
+
+Releases include static binaries as release artifacts which can be downloaded and run in the CI of other repos. This repo also includes a reusable GitHub action that can be used to install the `cleret` executable using its release artifact:
+
+```yaml
+- name: Install cleret
+  uses: input-output-hk/cardano-ledger-release-tool/actions/install-cleret@0.2
+```
+
 ## Usage
 
 ```
