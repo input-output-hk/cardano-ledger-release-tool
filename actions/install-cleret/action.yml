@@ -4,6 +4,8 @@ runs:
   steps:
   - shell: bash
     env:
+      REPO: ${{ github.action_repository }}
+      RELEASE: ${{ github.action_ref }}
       GH_TOKEN: ${{ github.token }}
     run: |
       BINDIR=$HOME/.local/bin
@@ -15,8 +17,6 @@ runs:
       # it typically isn't when testing a workflow locally with `act`.
       type gh || { sudo apt-get update && sudo apt-get install -y gh; }
 
-      REPO=${{ github.action_repository }}
-      RELEASE=${{ github.action_ref }}
       PLATFORM=$(uname -s)-$(uname -m)
       gh release download -O - -R "$REPO" "$RELEASE" -p "*-$PLATFORM-*.tgz" |
         tar -xz --strip-components=1 --wildcards -C "$BINDIR" '*/cleret'
