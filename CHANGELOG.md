@@ -2,6 +2,10 @@
 
 Version history for `cardano-ledger-release-tool`
 
+## 0.2.0.1
+
+* Add a reusable GH action that installs cleret
+
 ## 0.2.0.0
 
 * Add a `cabal` group of subcommands

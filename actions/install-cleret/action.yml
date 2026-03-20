@@ -1,0 +1,22 @@
+name: Install cleret
+runs:
+  using: composite
+  steps:
+  - shell: bash
+    env:
+      GH_TOKEN: ${{ github.token }}
+    run: |
+      BINDIR=$HOME/.local/bin
+      mkdir -p "$BINDIR"
+      grep -q "$BINDIR" "$GITHUB_PATH" || echo "$BINDIR" >>"$GITHUB_PATH"
+
+      # TODO: change this to be cross-platform, or remove it.
+      # Although `gh` should always be present on one of GitHub's runners,
+      # it typically isn't when testing a workflow locally with `act`.
+      type gh || { sudo apt-get update && sudo apt-get install -y gh; }
+
+      REPO=${{ github.action_repository }}
+      RELEASE=${{ github.action_ref }}
+      PLATFORM=$(uname -s)-$(uname -m)
+      gh release download -O - -R "$REPO" "$RELEASE" -p "*-$PLATFORM-*.tgz" |
+        tar -xz --strip-components=1 --wildcards -C "$BINDIR" '*/cleret'
