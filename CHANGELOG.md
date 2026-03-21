@@ -2,9 +2,9 @@
 
 Version history for `cardano-ledger-release-tool`
 
-## 0.3.0.1
+## 0.4.0.0
 
-*
+* Add a `failures` group of subcommands
 
 ## 0.3.0.0
 
