@@ -77,3 +77,32 @@ executable cleret
     time,
     unliftio,
     yaml,
+
+test-suite golden-tests
+  import: language, warnings, rts
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: main.hs
+  other-modules:
+    Paths_cardano_ledger_release_tool
+    Test.Cabal.Spec
+    Test.Changelogs.Spec
+    Test.Common.Fixture
+    Test.Common.Golden
+    Test.Failures.Spec
+    Test.Nix.Spec
+    Test.Workflow.Spec
+
+  autogen-modules:
+    Paths_cardano_ledger_release_tool
+
+  build-depends:
+    base,
+    filepath,
+    hspec,
+    HUnit,
+    text,
+    unliftio,
+
+  build-tool-depends:
+    cardano-ledger-release-tool:cleret
