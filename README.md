@@ -27,6 +27,7 @@ Available options:
 Available commands:
   cabal                    Operations on a Cabal project
   changelogs               Operations on the changelogs of a project
+  nix                      Operations on the nix information of a Cabal project
   workflow                 Operations on the GitHub workflows of a Cabal project
 ```
 
@@ -131,6 +132,35 @@ Available options:
   -x,--exclude TYPE        Exclude targets of type TYPE (repeatable; one of: lib,
                            flib, exe, test, bench, setup)
   PACKAGE ...              Show targets for PACKAGE ... (default: all packages)
+```
+
+### `nix`
+
+```
+Usage: cleret nix COMMAND
+
+  Operations on the nix information of a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+
+Available commands:
+  hashes                   Check the nix hashes in a flake-enabled Cabal project
+```
+
+#### `nix hashes`
+
+```
+Usage: cleret nix hashes [-v|--verbose] [-p|--prefetch] [PROJECT-FILE] [LOCK-FILE]
+
+  Check the nix hashes in a flake-enabled Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Produce verbose output
+  -p,--prefetch            Prefetch inputs to check hash correctness
+  PROJECT-FILE             Cabal project file (default: cabal.project)
+  LOCK-FILE                Nix flake lock file (default: flake.lock)
 ```
 
 ## Building the Code

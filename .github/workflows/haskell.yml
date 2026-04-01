@@ -53,3 +53,11 @@ jobs:
       run: |
         cabal run -- cleret changelogs format -i $(git ls-files '*CHANGELOG.md')
         git diff --exit-code
+
+    - name: Install nix
+      if: matrix.ghc == '9.10.3'
+      uses: cachix/install-nix-action@v31
+
+    - name: Check nix hashes
+      if: matrix.ghc == '9.10.3'
+      run: cabal run -- cleret nix hashes -v
