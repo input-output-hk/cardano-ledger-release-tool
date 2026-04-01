@@ -9,7 +9,7 @@ import Common.Options (Options (..), options, subparsers)
 import Control.Monad (unless, when)
 import Data.Bool (bool)
 import Data.Foldable (for_)
-import Data.List ((\\))
+import Data.List (nub, (\\))
 import Data.Text (Text)
 import Data.Yaml (Value, decodeFileThrow)
 import Lens.Micro ((^..))
@@ -104,7 +104,8 @@ planTests plan =
       isTestComp (CompNameTest _) = True
       isTestComp _ = False
       pIdName (PkgId (PkgName name) _) = name
-   in pIdName . uPId <$> unitsWithTests
+   -- deduplicate the test package names since a package could have multiple suites
+   in nub $ pIdName . uPId <$> unitsWithTests
 
 workflowTests :: Value -> [Text]
 workflowTests v = v ^.. key "jobs" . key "test" . key "strategy" . key "matrix" . key "package" . values . _String
