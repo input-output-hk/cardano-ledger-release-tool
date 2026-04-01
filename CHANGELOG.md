@@ -2,6 +2,10 @@
 
 Version history for `cardano-ledger-release-tool`
 
+## 0.3.0.1
+
+*
+
 ## 0.3.0.0
 
 * Add a `nix` group of subcommands
