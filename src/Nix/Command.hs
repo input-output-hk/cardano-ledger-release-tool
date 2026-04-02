@@ -15,7 +15,8 @@ import Data.ByteString (ByteString)
 import Data.Char (toLower)
 import Data.Foldable (for_)
 import Data.List (sortOn, stripPrefix)
-import Data.Maybe (mapMaybe)
+import Data.Map.Strict (Map)
+import Data.Maybe (fromMaybe, listToMaybe, mapMaybe)
 import Data.Text (Text)
 import Data.Time (NominalDiffTime, diffUTCTime, getCurrentTime)
 import GHC.Generics (Generic)
@@ -23,14 +24,18 @@ import Lens.Micro
 import Lens.Micro.Aeson
 import Lens.Micro.Extras
 import Options.Applicative
+import System.Directory (createDirectory)
 import System.Exit (ExitCode (..), exitFailure)
+import System.FilePath ((</>))
 import System.IO (hFlush, stderr, stdout)
-import System.Process (readProcessWithExitCode, showCommandForUser)
+import System.IO.Temp (withSystemTempDirectory)
+import System.Process (readProcess, readProcessWithExitCode, showCommandForUser)
 import Text.Printf (printf)
 import Text.Regex.Applicative
 
 import qualified Data.ByteString as B
 import qualified Data.List.NonEmpty as NE
+import qualified Data.Map.Strict as Map
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
 
@@ -77,7 +82,12 @@ hashesCmd =
                 <> showDefaultWith id
           pure $ checkHashes optCommon HashesOptions {..}
       )
-      (progDesc "Check the nix hashes in a flake-enabled Cabal project")
+      ( fullDesc
+          <> progDesc "Check the nix hashes in a flake-enabled Cabal project"
+          <> footer
+            "Relevant authentication tokens found in the nix configuration will \
+            \be used when prefetching, in case any of the inputs are private"
+      )
 
 checkHashes :: Options -> HashesOptions -> IO ()
 checkHashes Options {..} HashesOptions {..} = do
@@ -135,6 +145,14 @@ data Failure
 
 checkInputHashes :: Bool -> Bool -> [Input] -> IO [(Input, Failure)]
 checkInputHashes verbose prefetch inputs = do
+  tokens <-
+    if prefetch
+      then
+        view (key "access-tokens" . key "value" . _JSON)
+          <$> readProcess "nix" ["config", "show", "--json"] ""
+      else
+        pure mempty
+
   let
     inputCommit Input {..} = (inputType_, inputOwner_, inputRepo_, inputRev_)
     groups = NE.groupAllWith inputCommit inputs
@@ -149,7 +167,7 @@ checkInputHashes verbose prefetch inputs = do
       (duration, failures) <-
         timed $
           case hashes of
-            [hash] -> if prefetch then checkInputHash input hash else pure []
+            [hash] -> if prefetch then checkInputHash tokens input hash else pure []
             _ -> pure [NoSingleHash hashes]
       when verbose $ do
         printf "%.2fs\n" (realToFrac duration :: Double)
@@ -158,40 +176,71 @@ checkInputHashes verbose prefetch inputs = do
 
   foldMap checkGroup groups
 
-checkInputHash :: Input -> Text -> IO [Failure]
-checkInputHash inp expectedHash = do
+checkInputHash :: Map Text Text -> Input -> Text -> IO [Failure]
+checkInputHash tokens inp expectedHash = do
   let
+    host = (inp ^. inputType) <> ".com"
     owner = inp ^. inputOwner
     repo = inp ^. inputRepo
     rev = inp ^. inputRev
-    archiveUrl =
+
+    bearerAuth t = ["-H", "Authorization: Bearer " <> t]
+    privateAuth t = ["-H", "PRIVATE-TOKEN: " <> t]
+    githubAuth = bearerAuth
+    gitlabAuth t =
+      case T.split (== ':') t of
+        ["OAuth2", o2] -> bearerAuth o2
+        ["PAT", pat] -> privateAuth pat
+        [_, _] -> error "Unknown gitlab token type"
+        _ -> error "Couldn't parse gitlab token"
+
+    (archiveUrl, authType) =
       case inp ^. inputType of
         "github" ->
-          T.intercalate
-            "/"
-            ["https://github.com", owner, repo, "archive", rev <> ".tar.gz"]
+          ( T.intercalate
+              "/"
+              ["https://" <> host, owner, repo, "archive", rev <> ".tar.gz"]
+          , githubAuth
+          )
         "gitlab" ->
-          T.intercalate
-            "/"
-            ["https://gitlab.com", owner, repo, "-", "archive", rev, repo <> "-" <> rev <> ".tar.gz"]
+          ( T.intercalate
+              "/"
+              ["https://" <> host, owner, repo, "-", "archive", rev, repo <> "-" <> rev <> ".tar.gz"]
+          , gitlabAuth
+          )
         typ ->
           error $ "Unknown input type: " <> T.unpack typ
 
-  result <- runExceptT $ do
-    hash32 <- T.strip <$> readProcessExceptT "nix-prefetch-url" ["--unpack", archiveUrl] ""
-    actualHash <- T.strip <$> readProcessExceptT "nix" ["hash", "convert", "--hash-algo", "sha256", hash32] ""
-    pure [HashMismatch actualHash expectedHash | actualHash /= expectedHash]
+    auth = maybe [] (map T.unpack . authType) $ Map.lookup host tokens
+
+  result <-
+    withSystemTempDirectory "cleret" $ \workdir -> do
+      let
+        archive = workdir </> "archive.tgz"
+        hashdir = workdir </> "content"
+      createDirectory hashdir
+      runExceptT $ do
+        _ <- readProcessExceptT "curl" (auth <> ["-sSfL", "-o", archive, T.unpack archiveUrl]) ""
+        _ <- readProcessExceptT "tar" ["-xzf", archive, "-C", hashdir, "--strip-components=1"] ""
+        actualHash <- T.strip . T.pack <$> readProcessExceptT "nix" ["hash", "path", hashdir] ""
+        pure [HashMismatch actualHash expectedHash | actualHash /= expectedHash]
+
+  let
+    prefixes = ["Authorization: Bearer", "PRIVATE-TOKEN:"]
+    redact arg =
+      fromMaybe arg . listToMaybe $
+        [prefix <> " *****" | prefix <- prefixes, prefix `T.isPrefixOf` arg]
 
   case result of
-    Left (code, cmd, args, err) -> pure [PrefetchFailed code cmd args err]
+    Left (code, cmd, args, err) -> pure [PrefetchFailed code (T.pack cmd) (redact . T.pack <$> args) (T.pack err)]
     Right mismatches -> pure mismatches
 
-readProcessExceptT :: Text -> [Text] -> Text -> ExceptT (Int, Text, [Text], Text) IO Text
+readProcessExceptT :: String -> [String] -> String -> ExceptT (Int, String, [String], String) IO String
 readProcessExceptT cmd args input = do
-  (result, out, err) <- liftIO $ readProcessWithExitCode (T.unpack cmd) (T.unpack <$> args) (T.unpack input)
+  (result, out, err) <- liftIO $ readProcessWithExitCode cmd args input
   case result of
-    ExitSuccess -> pure $ T.pack out
-    ExitFailure code -> throwError (code, cmd, args, T.pack err)
+    ExitSuccess -> pure out
+    ExitFailure code -> throwError (code, cmd, args, err)
 
 timed :: IO a -> IO (NominalDiffTime, a)
 timed act = do
