@@ -10,11 +10,17 @@ on:
       version:
         type: string
 
+permissions:
+  contents: read
+
 jobs:
   build:
     name: 'Nix Build: build'
 
     runs-on: ubuntu-latest
+
+    outputs:
+      artifact: ${{ steps.result.outputs.artifact }}
 
     steps:
 
@@ -43,14 +49,33 @@ jobs:
         name: ${{ steps.result.outputs.artifact }}
         path: ${{ steps.result.outputs.products }}
 
-    - if: github.ref_type == 'tag' || inputs.version
-      name: Create release content
-      id: release
+  release:
+    if: github.ref_type == 'tag' || inputs.version
+
+    name: 'Nix Build: release'
+
+    needs: build
+
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+
+    - name: Download artifact
+      uses: actions/download-artifact@v8
+      with:
+        name: ${{ needs.build.outputs.artifact }}
+        path: artifact
+
+    - name: Create release content
+      id: content
       run: |
         version='${{ github.ref_type == 'tag' && github.ref_name || inputs.version }}'
-        release=${{ steps.result.outputs.artifact }}-$version
+        release='${{ needs.build.outputs.artifact }}'-$version
         archive=$release.tgz
-        mkdir "$release" && cp -p ${{ steps.result.outputs.products }} "$release"
+        mv artifact "$release"
         tar -czf "$archive" "$release"
         notes=$release.md
         cat <<EOF >"$notes"
@@ -60,13 +85,13 @@ jobs:
         echo "archive=$archive" >>"$GITHUB_OUTPUT"
         echo "notes=$notes" >>"$GITHUB_OUTPUT"
 
-    - if: steps.release.outputs.version
-      name: Create release
+    - name: Create release
       run: |
         gh release create \
-          '${{ steps.release.outputs.version }}' \
-          '${{ steps.release.outputs.archive }}' \
-          --notes-file '${{ steps.release.outputs.notes }}' \
+          '${{ steps.content.outputs.version }}' \
+          '${{ steps.content.outputs.archive }}' \
+          --notes-file '${{ steps.content.outputs.notes }}' \
+          --repo '${{ github.repository }}' \
           --target '${{ github.sha }}' \
           --verify-tag \
           --fail-on-no-commits \
