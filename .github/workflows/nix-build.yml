@@ -60,11 +60,14 @@ jobs:
 
     - if: steps.release.outputs.version
       name: Create release
-      uses: softprops/action-gh-release@v2
-      with:
-        tag_name: ${{ steps.release.outputs.version }}
-        files: ${{ steps.release.outputs.archive }}
-        body_path: ${{ steps.release.outputs.notes }}
-        target_commitish: ${{ github.sha }}
-        fail_on_unmatched_files: true
-        draft: true
+      run: |
+        gh release create \
+          '${{ steps.release.outputs.version }}' \
+          '${{ steps.release.outputs.archive }}' \
+          --notes-file '${{ steps.release.outputs.notes }}' \
+          --target '${{ github.sha }}' \
+          --verify-tag \
+          --fail-on-no-commits \
+          --draft
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
