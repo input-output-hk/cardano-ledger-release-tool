@@ -34,73 +34,6 @@ Available commands:
 
 ## Commands
 
-### `changelogs`
-
-```
-Usage: cleret changelogs COMMAND
-
-  Operations on the changelogs of a project
-
-Available options:
-  -h,--help                Show this help text
-
-Available commands:
-  format                   Parse and reformat changelog files
-```
-
-#### `changelogs format`
-
-```
-Usage: cleret changelogs format [-v|--verbose] [(-i|--inplace) | (-o|--output FILE)]
-                                [-b|--bullets CHARS] CHANGELOG ...
-
-  Parse and reformat changelog files
-
-Available options:
-  -h,--help                Show this help text
-  -v,--verbose             Produce verbose output
-  -i,--inplace             Modify files in-place
-  -o,--output FILE         Write output to FILE
-  -b,--bullets CHARS       Use CHARS for the levels of bullets (default: *-+)
-  CHANGELOG ...            Changelog files to process
-```
-
-Parse and re-render a changelog, as a form of linting; the output is the canonical representation of the changelog. Using `--inplace` followed by `git diff --exit-code` will determine whether the changelog needs to be changed.
-
-### `workflow`
-
-```
-Usage: cleret workflow COMMAND
-
-  Operations on the GitHub workflows of a Cabal project
-
-Available options:
-  -h,--help                Show this help text
-
-Available commands:
-  check-test-matrix        Check that the test jobs in a GitHub workflow match the
-                           tests in a Cabal project
-```
-
-#### `workflow check-test-matrix`
-
-```
-Usage: cleret workflow check-test-matrix
-         [-v|--verbose] [--project DIR] [--workflow FILENAME]
-
-  Check that the test jobs in a GitHub workflow match the tests in a Cabal project
-
-Available options:
-  -h,--help                Show this help text
-  -v,--verbose             Produce verbose output
-  --project DIR            The project directory, or a subdirectory of it
-                           (default: .)
-  --workflow FILENAME      The workflow file name (relative to .github/workflows)
-                           (default: haskell.yml)
-```
-
-Outputs the differences between the actual and the expected, and exits with a non-zero status if there are differences.
-
 ### `cabal`
 
 ```
@@ -134,6 +67,39 @@ Available options:
                            flib, exe, test, bench, setup)
   PACKAGE ...              Show targets for PACKAGE ... (default: all packages)
 ```
+
+### `changelogs`
+
+```
+Usage: cleret changelogs COMMAND
+
+  Operations on the changelogs of a project
+
+Available options:
+  -h,--help                Show this help text
+
+Available commands:
+  format                   Parse and reformat changelog files
+```
+
+#### `changelogs format`
+
+```
+Usage: cleret changelogs format [-v|--verbose] [(-i|--inplace) | (-o|--output FILE)]
+                                [-b|--bullets CHARS] CHANGELOG ...
+
+  Parse and reformat changelog files
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Produce verbose output
+  -i,--inplace             Modify files in-place
+  -o,--output FILE         Write output to FILE
+  -b,--bullets CHARS       Use CHARS for the levels of bullets (default: *-+)
+  CHANGELOG ...            Changelog files to process
+```
+
+Parse and re-render a changelog, as a form of linting; the output is the canonical representation of the changelog. Using `--inplace` followed by `git diff --exit-code` will determine whether the changelog needs to be changed.
 
 ### `failures`
 
@@ -221,6 +187,40 @@ Available options:
   PROJECT-FILE             Cabal project file (default: cabal.project)
   LOCK-FILE                Nix flake lock file (default: flake.lock)
 ```
+
+### `workflow`
+
+```
+Usage: cleret workflow COMMAND
+
+  Operations on the GitHub workflows of a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+
+Available commands:
+  check-test-matrix        Check that the test jobs in a GitHub workflow match the
+                           tests in a Cabal project
+```
+
+#### `workflow check-test-matrix`
+
+```
+Usage: cleret workflow check-test-matrix
+         [-v|--verbose] [--project DIR] [--workflow FILENAME]
+
+  Check that the test jobs in a GitHub workflow match the tests in a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Produce verbose output
+  --project DIR            The project directory, or a subdirectory of it
+                           (default: .)
+  --workflow FILENAME      The workflow file name (relative to .github/workflows)
+                           (default: haskell.yml)
+```
+
+Outputs the differences between the actual and the expected, and exits with a non-zero status if there are differences.
 
 ## Building the Code
 
