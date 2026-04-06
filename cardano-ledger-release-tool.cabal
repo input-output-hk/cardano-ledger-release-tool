@@ -14,6 +14,12 @@ description:
 tested-with:
   ghc ==8.10.7 || ==9.2.8 || ==9.4.8 || ==9.6.7 || ==9.8.4 || ==9.10.2 || ==9.12.2
 
+extra-doc-files:
+  CHANGELOG.md
+  LICENSE
+  NOTICE
+  README.md
+
 common language
   default-language: Haskell2010
   other-extensions:
