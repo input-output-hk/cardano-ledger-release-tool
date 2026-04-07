@@ -71,6 +71,7 @@ executable cleret
     pretty-simple,
     process,
     regex-applicative,
+    temporary,
     terminal-size,
     text,
     time,
