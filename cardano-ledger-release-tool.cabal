@@ -1,6 +1,6 @@
 cabal-version: 3.12
 name: cardano-ledger-release-tool
-version: 0.3.0.1
+version: 0.4.0.0
 author: Neil Mayhew <neil.mayhew@iohk.io>
 copyright: 2025 IOG
 license: Apache-2.0
@@ -43,6 +43,11 @@ executable cleret
     Changelogs.Command
     Changelogs.Types
     Common.Options
+    Failures.Command
+    Failures.Extract
+    Failures.LogResults
+    Failures.Parse
+    Failures.Render
     Nix.Command
     PackageInfo_cardano_ledger_release_tool
     Workflow.Command
