@@ -4,6 +4,7 @@ Version history for `cardano-ledger-release-tool`
 
 ## 0.4.0.0
 
+* Sort the output of `cabal targets`
 * Add short option variants to `workflow check-test-matrix`
 * Support passing directories as well as files on the command line
 * Support multiple verbosity levels with `-v`
