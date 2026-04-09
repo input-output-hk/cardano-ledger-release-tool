@@ -10,7 +10,7 @@ import Common.Options (Options (..), options, subparsers)
 import Control.Monad (when)
 import Data.Bool (bool)
 import Data.Char (toLower, toUpper)
-import Data.List (intercalate, stripPrefix, (\\))
+import Data.List (intercalate, sort, stripPrefix, (\\))
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Options.Applicative
@@ -110,7 +110,7 @@ targets Options {..} TargetsOptions {..} = do
     hPutStrLn stderr $
       "Plan has " <> show (Map.size $ pjUnitsWithType UnitTypeLocal plan) <> " local units"
 
-  Text.putStr . Text.unlines $
+  Text.putStr . Text.unlines . sort $
     [ dispCompNameTargetFull p c
     | u <- Map.elems $ pjUnitsWithType UnitTypeLocal plan
     , c <- Map.keys $ uComps u
