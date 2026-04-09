@@ -20,6 +20,12 @@ extra-doc-files:
   NOTICE
   README.md
 
+data-files:
+  test/fixtures/**/*.golden
+  test/fixtures/**/*.json
+  test/fixtures/**/*.log
+  test/fixtures/**/cabal.project
+
 common language
   default-language: Haskell2010
   other-extensions:
@@ -104,9 +110,12 @@ test-suite golden-tests
 
   build-depends:
     base,
+    filemanip,
     filepath,
     hspec,
     HUnit,
+    process,
+    temporary,
     text,
     unliftio,
 

@@ -1,0 +1,111 @@
+Test suite tests: RUNNING...
+
+Dijkstra
+  RoundTrip
+    Dijkstra Transaction Types
+      GovAction DijkstraEra [[32m✔[0m] (2245ms)
+        +++ OK, passed 100 tests.
+      VotingProcedure DijkstraEra [[32m✔[0m] (2ms)
+        +++ OK, passed 100 tests.
+      VotingProcedures DijkstraEra [[32m✔[0m] (1022ms)
+        +++ OK, passed 100 tests.
+      ProposalProcedure DijkstraEra [[32m✔[0m] (1685ms)
+        +++ OK, passed 100 tests.
+      Constitution DijkstraEra [[32m✔[0m] (2ms)
+        +++ OK, passed 100 tests.
+      CostModels [[32m✔[0m] (17885ms)
+        +++ OK, passed 100 tests.
+      Subtransactions
+        TxBody with subtransactions decoded as expected [[32m✔[0m]
+        Subtransactions have to be non-empty if the field is present [[32m✔[0m]
+        Subtransactions have to be distinct [[32m✔[0m]
+      IsValid flag
+        Deserialize transactions with missing `isValid` flag [[32m✔[0m]
+        Deserialize transactions with `isValid` flag set to true [[32m✔[0m]
+        Fail to deserialize transactions with `isValid` flag set to false [[32m✔[0m]
+
+Failures:
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  1) Dijkstra.Imp.AlonzoImpSpec, Protocol Version 12, BBODY, PlutusV1, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "bf97f02604ffd780f1d72d535d60dbcd40e941577e8865f51c311478"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Dijkstra.ImpTest[0m[0;93m:[0m[0;95m85[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+               mbBytes = mconcat
+                 [
+                   "\164\NUL\217\SOH\STX\130\130X \FS\189\&6}.\162\223g\222$\213/\EM\148\156\239w\163\233\&8<\SI\DC4\243\219\f\235\GS\150K\NUL%X@rB\DC3F\217\192\DEL\DLE\196\156\130\&3\176\147\241X\195J\t\251\STX}8D\139\227\&9\v\131\205\&5T\186d\157\175\237\179*uz\179\152>RIE=\208C\180\241\133\193\132rJl+\229)@C\f\130X `\233\151\146r\227\200gn|`\165)\219L\ETB\196\195}\141\211x\160\201[\153\130\164j\230+\185X@\180\&5n\DC1g\236\130\170\188!\240\173O\235lXW\207\181\ESC\235\159\SI\214\198\184^\STX\225z\193C\168`_c\211UL\145\186\r'\n",
+                   "\CAN\226`\175\202\180\221\179\238\189-8F\166\194\180\242.p\b\ETX\217\SOH\STX\129X(X&\SOH\NUL\NUL\"%35sFn\GS \STX5W:n\168\213\208\154\186#Us\198\234\128\EOTD\128\EOTL\141@\EOT\NULY\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\NUL\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL"],
+               mbHash = SafeHash
+                 "fe5c6f414e11645bc03884919711dd9fa5d018df4895f465e338bb60805f3e87"},
+           dtIsValid = IsValid True,
+           dtAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Dijkstra/Imp/AlonzoImpSpec/Protocol Version 12/BBODY/PlutusV1/enforces ppMaxBlockExUnits/" --seed 1878305106
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  2) Dijkstra.Imp.AlonzoImpSpec, Protocol Version 12, BBODY, PlutusV2, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "32c1100dea60b653233e32adb33e20d9a30c8359f7072027ec3e00a0"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Dijkstra.ImpTest[0m[0;93m:[0m[0;95m85[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+               mbBytes =
+               "\164\NUL\217\SOH\STX\130\130X \FS\189\&6}.\162\223g\222$\213/\EM\148\156\239w\163\233\&8<\SI\DC4\243\219\f\235\GS\150K\NUL%X@\NAKb\244\246\DLE\143\159\130\240S\198o;\t\231\168\146z\a\238^c\ETXNggE\141\t\183\160\STX33\217mJ\166u\SO\209\&3YY1s}~\233\248\136.\165\172)\133\&5\188\&2\152.)\217\b\130X `\233\151\146r\227\200gn|`\165)\219L\ETB\196\195}\141\211x\160\201[\153\130\164j\230+\185X@.\167\248\SO\240'\143bJ\GSk:\201\208\218\211\164\DC2\171\173\NUL\ETX57\155r\128\a\203\ta,\189\163\t8\184-y\226^A \DC3K\SO\b\213N\178\210\173\149\231\168T\234S\172\210\196\238\157\t\ACK\217\SOH\STX\129X(X&\SOH\NUL\NUL\"%35sFn\GS \STX5W:n\168\213\208\154\186#Us\198\234\128\EOTD\128\EOTL\141@\EOT\NULY\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL",
+               mbHash = SafeHash
+                 "1f757045bda1beed08f9eaa55da38bfa12e2c6ffcba515eedef27e280f1cf2a1"},
+           dtIsValid = IsValid True,
+           dtAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Dijkstra/Imp/AlonzoImpSpec/Protocol Version 12/BBODY/PlutusV2/enforces ppMaxBlockExUnits/" --seed 1878305106
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  3) Dijkstra.Imp.AlonzoImpSpec, Protocol Version 12, BBODY, PlutusV3, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "5eac0376e2d041e1753d8a5a5f133d4fcdb69ac40c8030bad97bc3ad"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Dijkstra.ImpTest[0m[0;93m:[0m[0;95m85[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+               mbBytes =
+               "\164\NUL\217\SOH\STX\130\130X \FS\189\&6}.\162\223g\222$\213/\EM\148\156\239w\163\233\&8<\SI\DC4\243\219\f\235\GS\150K\NUL%X@\bP\173\137=\v\240\145\171_\198\212b\173\253 e\141\179\170\208\DC1$\236\DLEm\131\DEL\152\170\STX\182\146\GS\177\&4\173\147\&8.\139\147q}e'\185\DLEeT\179\RSg-G\213m\184g\247Z\192~\STX\130X `\233\151\146r\227\200gn|`\165)\219L\ETB\196\195}\141\211x\160\201[\153\130\164j\230+\185X@)\SI\FSw\132\213\223\234\173\&6\f\238\222\193\"y\216KU\208\179\145o \209\149\201 \164Vq\250n\129\229>\228\STX\202\187\172\207\229\141\172\FS\219W\230\ETXX\RS\142a\134:\138~@}E\249\228\NUL\a\217\SOH\STX\129X\193X\191\SOH\SOH\NUL%235sFJfj\230\140\220:@\EOTj\174t\NULFL\140\200\140\201L\205\\\209\155\136\NUL4\128\NULL\SOH\146A\ETXPT6\NUL\DC30\SOH\NUL8\SOH\148\NULM]\b\NUL\176\ETX(\SOH`\NUL\EM\CAN\NUL\128\t\DC1H\NUL\204\STX\DC2A\ETXPT7\NUL\145)\153\171\154\&3p\233\NUL\NUL\STX\b\SOH\t\153\EM\128\&0\ETX\NUL\t\155\129\NULD\128\b\NUL@\STXj\174t\NULMU\207\NUL\t\186\163WBj\232\141U\207\NUL\f\146\141(\ENQ(\ESC\170\147#(\NUL\154\186\DLE\STX\154\186\DLE\SOH\154\186\DC3WD\NUL#WD\NUL&\170\231\141\213\NUL\DC4\136\128\EOT)0\152\NUL\164\129\ETXPT5\NUL#&3W8\NUL0\NUL\SOH\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\NUL\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL",
+               mbHash = SafeHash
+                 "39c10e43c955d8893528af536910d9ff6b5c838671e3a168c5bf343085b16e21"},
+           dtIsValid = IsValid True,
+           dtAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Dijkstra/Imp/AlonzoImpSpec/Protocol Version 12/BBODY/PlutusV3/enforces ppMaxBlockExUnits/" --seed 1878305106
+
+Randomized with seed 1878305106
+
+Finished in 1819.5639 seconds
+[31m623 examples, 3 failures, 23 pending[0m
+Test suite tests: FAIL
+Test suite logged to: /home/runner/work/cardano-ledger/cardano-ledger/dist-newstyle/build/x86_64-linux/ghc-9.6.7/cardano-ledger-dijkstra-0.3.0.0/t/tests/test/cardano-ledger-dijkstra-0.3.0.0-tests.log
