@@ -1,0 +1,2 @@
+The following tests should not be in the workflow:
+* cardano-ledger-euler
