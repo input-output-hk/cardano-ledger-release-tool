@@ -50,6 +50,7 @@ checkTestMatrixCmd =
           optProjectDir <-
             strOption $
               help "The project directory, or a subdirectory of it"
+                <> short 'p'
                 <> long "project"
                 <> metavar "DIR"
                 <> value "."
@@ -57,6 +58,7 @@ checkTestMatrixCmd =
           optWorkflowFile <-
             strOption $
               help "The workflow file name (relative to .github/workflows)"
+                <> short 'w'
                 <> long "workflow"
                 <> metavar "FILENAME"
                 <> value "haskell.yml"
