@@ -24,6 +24,7 @@ data-files:
   test/fixtures/**/*.golden
   test/fixtures/**/*.json
   test/fixtures/**/*.log
+  test/fixtures/**/*.yml
   test/fixtures/**/cabal.project
 
 common language
