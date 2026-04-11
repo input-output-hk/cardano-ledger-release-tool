@@ -1,0 +1,179 @@
+-- Custom repository for cardano haskell packages, see CONTRIBUTING for more
+repository cardano-haskell-packages
+  url: https://chap.intersectmbo.org/
+  secure: True
+  root-keys:
+    3e0cce471cf09815f930210f7827266fd09045445d65923e6d0238a6cd15126f
+    443abb7fb497a134c343faf52f0b659bd7999bc06b7f63fa76dc99d631f9bea1
+    a86a1f6ce86c449c46666bda44268677abf29b5b2d2eb5ec7af903ec2f117a82
+    bcec67e8e99cabfa7764d75ad9b158d72bfacf70ca1d0ec8bc6b4406d1bf8413
+    c00aae8461a256275598500ea0e187588c35a5d5d7454fb57eac18d9edb86a56
+    d4a35cd3121aa00d18544bb0ac01c3e1691d618f462c46129271bccf39f7e8ee
+
+source-repository-package
+  type: git
+  location: https://github.com/IntersectMBO/formal-ledger-specifications.git
+  subdir: hs
+  -- !WARNING!:
+  -- MAKE SURE THIS POINTS TO A COMMIT IN `*-artifacts` BEFORE MERGE!
+  tag: 6158038b8ee2574c04e164aa9bdfd4db4f505793
+
+source-repository-package
+  type: git
+  location: https://github.com/input-output-hk/constrained-generators.git
+  --sha256: sha256-h0bJTwdfJG84XrERJJoBBi5ZzRHgeVoZWS2yW/z7LiU=
+  tag: 966f65f3c28cb22fc45220dbd1408baea93b53d8
+
+-- NOTE: If you would like to update the above,
+-- see CONTRIBUTING.md#to-update-the-referenced-agda-ledger-spec
+index-state:
+  , hackage.haskell.org 2026-02-24T18:41:42Z
+  , cardano-haskell-packages 2026-02-19T00:52:30Z
+
+packages:
+  -- == Byron era ==
+  -- byron-spec-chain:
+  -- byron-spec-ledger:
+  -- cardano-ledger-byron:
+  -- cardano-crypto-wrapper:
+  -- Packages used during development and are not released to CHaPs:
+  eras/allegra/impl
+  eras/alonzo/impl
+  eras/alonzo/test-suite
+  eras/babbage/impl
+  eras/conway/impl
+  eras/dijkstra/impl
+  eras/mary/impl
+  eras/shelley/impl
+  eras/shelley/test-suite
+  eras/shelley-ma/test-suite
+  libs/cardano-ledger-api
+  libs/cardano-ledger-binary
+  libs/cardano-ledger-canonical-state
+  libs/cardano-ledger-core
+  libs/cardano-protocol-tpraos
+  libs/non-integral
+  libs/small-steps
+  libs/cardano-data
+  libs/vector-map
+  eras/byron/chain/executable-spec
+  eras/byron/ledger/executable-spec
+  eras/byron/ledger/impl
+  eras/byron/crypto
+  libs/cardano-ledger-conformance
+  libs/cardano-ledger-test
+  libs/plutus-preprocessor
+  libs/ledger-state
+  libs/cardano-ledger-repl-environment
+
+program-options
+  ghc-options: -Werror
+
+package plutus-preprocessor
+  haddock-options: "--optghc=-fplugin-opt PlutusTx.Plugin:defer-errors"
+
+package cardano-ledger-core
+  flags: +asserts
+
+package cardano-ledger-shelley
+  flags: +asserts
+
+package cardano-ledger-mary
+  flags: +asserts
+
+package cardano-ledger-conway
+  flags: +asserts
+
+-- Always write GHC env files, because they are needed for repl and by the doctests.
+write-ghc-environment-files: always
+-- Always build tests and benchmarks.
+tests: true
+benchmarks: true
+-- The only sensible test display option
+test-show-details: streaming
+allow-newer:
+  -- Drop this when the bounds in plutus-core are updated
+  plutus-core:cardano-crypto-class
+
+if impl(ghc >=9.12)
+  allow-newer:
+    -- Unique: https://github.com/kapralVV/Unique/issues/11
+    , Unique:hashable
+
+source-repository-package
+  type: git
+  location: https://github.com/tweag/cardano-cls.git
+  subdir: merkle-tree-incremental mempack-scls scls-cbor scls-cardano scls-format scls-core
+  --sha256: sha256-y5T8XBVqhNWCpVNuVrcPDILOVd8M3e0QT6s2onBekPk=
+  tag: 108fc4701079d5da250eaba9547db930fcb1c1e2
+
+if impl(ghc >=9.14)
+  source-repository-package
+    type: git
+    -- https://github.com/snowleopard/alga/issues/322
+    location: https://github.com/snowleopard/alga/
+    --sha256: sha256-sQRAjHV+bor/SBt/zDtcw3tN1ir7xjjevEdyYqilNWg=
+    tag: d4e43fb42db05413459fb2df493361d5a666588a
+
+if impl(ghc >=9.14)
+  constraints:
+    , containers >= 0.8
+    , foldl >= 1.4.18
+
+  allow-newer:
+    -- https://github.com/IntersectMBO/cardano-ledger/issues/5588
+    -- Plutus stuff has been fixed in the master branch on Github,
+    -- but not yet released to CHaP.
+    , aeson:QuickCheck
+    , aeson:base
+    , aeson:containers
+    , aeson:data-fix
+    , aeson:template-haskell
+    , aeson:time
+    , binary-orphans:base
+    , boring:base
+    , canonical-json:containers
+    , cborg:base
+    , cborg:containers
+    , serialise:base
+    , serialise:containers
+    , config-ini:containers
+    , constraints-extras:base
+    , constraints-extras:template-haskell
+    , dependent-map:constraints-extras
+    , dependent-map:containers
+    , dictionary-sharing:containers
+    , dec:base
+    , bin:base
+    , fin:base
+    , ral:base
+    , http-api-data:base
+    , http-api-data:containers
+    , indexed-traversable:base
+    , indexed-traversable:containers
+    , indexed-traversable-instances:base
+    , microstache:base
+    , microstache:containers
+    , nonempty-vector:base
+    , ordered-containers:containers
+    , persistent:template-haskell
+    , plutus-core:dependent-map
+    , plutus-core:vty
+    , plutus-core:vty-crossplatform
+    , pqueue:base
+    , quickcheck-instances:base
+    , quickcheck-instances:containers
+    , quickcheck-instances:these
+    , quickcheck-instances:uuid-types
+    , semialign:base
+    , semialign:containers
+    , semialign:indexed-traversable
+    , semialign:indexed-traversable-instances
+    , these:base
+    , tree-diff:QuickCheck
+    , tree-diff:base
+    , tree-diff:containers
+    , tree-diff:time
+    , universe-base:base
+    , universe-base:containers
+    , uuid-types:template-haskell

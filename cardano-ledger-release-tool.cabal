@@ -14,6 +14,20 @@ description:
 tested-with:
   ghc ==8.10.7 || ==9.2.8 || ==9.4.8 || ==9.6.7 || ==9.8.4 || ==9.10.2 || ==9.12.2
 
+extra-doc-files:
+  CHANGELOG.md
+  LICENSE
+  NOTICE
+  README.md
+
+data-files:
+  test/fixtures/**/*.golden
+  test/fixtures/**/*.json
+  test/fixtures/**/*.lock
+  test/fixtures/**/*.log
+  test/fixtures/**/*.project
+  test/fixtures/**/*.yml
+
 common language
   default-language: Haskell2010
   other-extensions:
@@ -77,3 +91,35 @@ executable cleret
     time,
     unliftio,
     yaml,
+
+test-suite golden-tests
+  import: language, warnings, rts
+  type: exitcode-stdio-1.0
+  hs-source-dirs: test
+  main-is: main.hs
+  other-modules:
+    Paths_cardano_ledger_release_tool
+    Test.Cabal.Spec
+    Test.Changelogs.Spec
+    Test.Common.Fixture
+    Test.Common.Golden
+    Test.Failures.Spec
+    Test.Nix.Spec
+    Test.Workflow.Spec
+
+  autogen-modules:
+    Paths_cardano_ledger_release_tool
+
+  build-depends:
+    base,
+    filemanip,
+    filepath,
+    hspec,
+    HUnit,
+    process,
+    temporary,
+    text,
+    unliftio,
+
+  build-tool-depends:
+    cardano-ledger-release-tool:cleret
