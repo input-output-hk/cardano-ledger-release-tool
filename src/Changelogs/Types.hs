@@ -139,7 +139,7 @@ makeVersion = parseVersion' . mconcat . map nodeText
   parseVersion' :: Text -> Except Text Version
   parseVersion' t = case sortOn (length . snd) . readP_to_S parseVersion . unpack $ t of
     (v, _) : _ -> pure v
-    unexpected -> throwError $ "Unexpected Version parse result: " <> pShow unexpected
+    _ -> throwError $ "Could not parse " <> pShow t <> " as a version"
 
 unmakeVersion :: Version -> Markdown
 unmakeVersion v = [Node Nothing (TEXT $ T.pack . showVersion $ v) []]
