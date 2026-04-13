@@ -15,7 +15,7 @@ import Data.List (sortOn)
 import Data.Text.Lazy (Text, unpack)
 import Data.Version (Version, parseVersion, showVersion)
 import Text.ParserCombinators.ReadP (readP_to_S)
-import Text.Pretty.Simple (pShow)
+import Text.Pretty.Simple (pShowNoColor)
 
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
@@ -59,7 +59,7 @@ buildSections (Node _ DOCUMENT docNodes) = pure $ foldr go mempty docNodes
      in ([], Section level titleNodes ns children : others)
   go n (ns, ss) =
     (n : ns, ss)
-buildSections (Node mPos typ _) = throwError $ "Unexpected top-level node type (" <> pShow typ <> ") at " <> pShow mPos
+buildSections (Node mPos typ _) = throwError $ "Unexpected top-level node type (" <> pShowNoColor typ <> ") at " <> pShowNoColor mPos
 
 unbuildSections :: (Markdown, [Section]) -> Node
 unbuildSections (md, ss) =
@@ -112,7 +112,7 @@ renderChangelog bullets = fixMarkdownStyle bullets . TL.fromStrict . nodeToCommo
 makeChangeLog :: (Markdown, [Section]) -> Except Text Changelog
 makeChangeLog ([], [Section 1 title paragraphs sections]) =
   Changelog title <$> makeParagraphs paragraphs <*> traverse makeRelease sections
-makeChangeLog unexpected = throwError $ "Unexpected Changelog input: " <> pShow unexpected
+makeChangeLog unexpected = throwError $ "Unexpected Changelog input: " <> pShowNoColor unexpected
 
 unmakeChangelog :: Changelog -> (Markdown, [Section])
 unmakeChangelog Changelog {..} =
@@ -123,7 +123,7 @@ makeRelease (Section 2 title markdown subsections) =
   Release <$> makeVersion title <*> makeParagraphs paragraphs <*> makeEntries entries <*> traverse makeSublib subsections
  where
   (paragraphs, entries) = span ((PARAGRAPH ==) . nodeType) markdown
-makeRelease unexpected = throwError $ "Unexpected Release parse result: " <> pShow unexpected
+makeRelease unexpected = throwError $ "Unexpected Release parse result: " <> pShowNoColor unexpected
 
 unmakeRelease :: Release -> Section
 unmakeRelease Release {..} =
@@ -139,14 +139,14 @@ makeVersion = parseVersion' . mconcat . map nodeText
   parseVersion' :: Text -> Except Text Version
   parseVersion' t = case sortOn (length . snd) . readP_to_S parseVersion . unpack $ t of
     (v, _) : _ -> pure v
-    _ -> throwError $ "Could not parse " <> pShow t <> " as a version"
+    _ -> throwError $ "Could not parse " <> pShowNoColor t <> " as a version"
 
 unmakeVersion :: Version -> Markdown
 unmakeVersion v = [Node Nothing (TEXT $ T.pack . showVersion $ v) []]
 
 makeSublib :: Section -> Except Text Sublib
 makeSublib (Section 3 title markdown []) = Sublib title <$> makeEntries markdown
-makeSublib unexpected = throwError $ "Unexpected Sublib input: " <> pShow unexpected
+makeSublib unexpected = throwError $ "Unexpected Sublib input: " <> pShowNoColor unexpected
 
 unmakeSublib :: Sublib -> Section
 unmakeSublib Sublib {..} = Section 3 sublibName (unmakeEntries sublibEntries) []
@@ -154,7 +154,7 @@ unmakeSublib Sublib {..} = Section 3 sublibName (unmakeEntries sublibEntries) []
 makeParagraphs :: Markdown -> Except Text [Paragraph]
 makeParagraphs markdown
   | all ((PARAGRAPH ==) . nodeType) markdown = pure $ map (Paragraph . nodeChildren) markdown
-makeParagraphs unexpected = throwError $ "Unexpected Paragraphs input: " <> pShow unexpected
+makeParagraphs unexpected = throwError $ "Unexpected Paragraphs input: " <> pShowNoColor unexpected
 
 unmakeParagraphs :: [Paragraph] -> Markdown
 unmakeParagraphs = map (Node Nothing PARAGRAPH . unParagraph)
@@ -163,7 +163,7 @@ makeEntries :: Markdown -> Except Text [Entry]
 makeEntries [Node _ (LIST _) entries]
   | all ((ITEM ==) . nodeType) entries = pure $ map (Entry . nodeChildren) entries
 makeEntries [] = pure []
-makeEntries unexpected = throwError $ "Unexpected Entries input: " <> pShow unexpected
+makeEntries unexpected = throwError $ "Unexpected Entries input: " <> pShowNoColor unexpected
 
 unmakeEntries :: [Entry] -> Markdown
 unmakeEntries [] = []
