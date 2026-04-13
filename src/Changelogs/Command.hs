@@ -87,7 +87,7 @@ formatChangelogs Options {..} FormatChangelogsOptions {..} = do
       let
         throwError e = errorWithoutStackTrace $ fp <> ": " <> TL.unpack e
         writeLog = optWriteFile fp . renderChangelog optBulletHierarchy
-      when optVerbose $
+      when (optVerbosity > 0) $
         hPutStrLn stderr $
           "Examining " <> fp
       either throwError writeLog . parseChangelog =<< TL.readFile fp

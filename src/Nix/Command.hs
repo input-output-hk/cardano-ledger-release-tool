@@ -94,11 +94,11 @@ checkHashes Options {..} HashesOptions {..} = do
   srps <- parseSrps <$> T.readFile optProject
   locks <- parseLocks <$> B.readFile optFlakeLock
 
-  when optVerbose $ do
+  when (optVerbosity > 0) $ do
     printf "Found %2d inputs in %s\n" (length srps) optProject
     printf "Found %2d inputs in %s\n" (length locks) optFlakeLock
 
-  failures <- checkInputHashes optVerbose optPrefetch (srps <> locks)
+  failures <- checkInputHashes optVerbosity optPrefetch (srps <> locks)
 
   for_ (sortOn snd failures) $ \(input, failure) -> do
     let urlAndRev = (input ^. inputUrl) <> "@" <> (input ^. inputRev)
@@ -143,8 +143,8 @@ data Failure
   | PrefetchFailed !Int !Text ![Text] !Text
   deriving (Eq, Ord, Show)
 
-checkInputHashes :: Bool -> Bool -> [Input] -> IO [(Input, Failure)]
-checkInputHashes verbose prefetch inputs = do
+checkInputHashes :: Int -> Bool -> [Input] -> IO [(Input, Failure)]
+checkInputHashes verbosity prefetch inputs = do
   tokens <-
     if prefetch
       then
@@ -161,7 +161,7 @@ checkInputHashes verbose prefetch inputs = do
         input = NE.head group
         hashes = mapMaybe (view inputNarHash) $ NE.toList group
         urlAndRev = (input ^. inputUrl) <> "@" <> (input ^. inputRev)
-      when verbose $ do
+      when (verbosity > 0) $ do
         T.putStr $ "Checking " <> urlAndRev <> " ... "
         hFlush stdout
       (duration, failures) <-
@@ -169,7 +169,7 @@ checkInputHashes verbose prefetch inputs = do
           case hashes of
             [hash] -> if prefetch then checkInputHash tokens input hash else pure []
             _ -> pure [NoSingleHash hashes]
-      when verbose $ do
+      when (verbosity > 0) $ do
         printf "%.2fs\n" (realToFrac duration :: Double)
         hFlush stdout
       pure $ (input,) <$> failures

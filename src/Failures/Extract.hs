@@ -55,8 +55,7 @@ extractCmd = do
 extract :: Options -> ExtractOptions -> IO ()
 extract Options {..} ExtractOptions {..} = do
   let
-    trace :: Int -> String -> IO ()
-    trace _n = if optVerbose then hPutStrLn stderr else const mempty
+    trace n = if optVerbosity >= n then hPutStrLn stderr else const mempty
 
   -- Avoid confusing behaviour from `findProjectRoot`
   doesDirectoryExist optProjectDir
