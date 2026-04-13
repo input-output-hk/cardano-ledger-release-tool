@@ -25,6 +25,7 @@ data-files:
   test/fixtures/**/*.json
   test/fixtures/**/*.lock
   test/fixtures/**/*.log
+  test/fixtures/**/*.md
   test/fixtures/**/*.project
   test/fixtures/**/*.yml
 
