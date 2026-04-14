@@ -100,13 +100,13 @@ targets Options {..} TargetsOptions {..} = do
     findProjectRoot optProjectDir
       >>= maybe (die $ "Can't find project root in " <> optProjectDir) pure
 
-  when optVerbose $
+  when (optVerbosity > 0) $
     hPutStrLn stderr $
       "Examining " <> root
 
   plan <- findAndDecodePlanJson $ ProjectRelativeToDir root
 
-  when optVerbose $
+  when (optVerbosity > 0) $
     hPutStrLn stderr $
       "Plan has " <> show (Map.size $ pjUnitsWithType UnitTypeLocal plan) <> " local units"
 

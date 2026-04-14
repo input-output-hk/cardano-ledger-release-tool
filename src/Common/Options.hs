@@ -7,18 +7,21 @@ import Data.Foldable (fold)
 import Options.Applicative
 
 newtype Options = Options
-  { optVerbose :: Bool
+  { optVerbosity :: Int
   }
   deriving (Show)
 
 options :: Parser Options
 options = do
-  optVerbose <-
-    switch $
-      help "Produce verbose output"
+  optVerbosity <-
+    counter $
+      help "Increase output verbosity (repeatable)"
         <> short 'v'
         <> long "verbose"
   pure Options {..}
+
+counter :: Mod FlagFields () -> Parser Int
+counter = fmap length . many . flag' ()
 
 subparsers :: Foldable t => t (Mod CommandFields a) -> Parser a
 subparsers = subparser . fold

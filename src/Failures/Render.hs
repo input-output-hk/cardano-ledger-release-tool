@@ -51,8 +51,7 @@ renderCmd = do
 render :: Options -> RenderOptions -> IO ()
 render Options {..} RenderOptions {..} = do
   let
-    trace :: Int -> String -> IO ()
-    trace _n = if optVerbose then hPutStrLn stderr else const mempty
+    trace n = if optVerbosity >= n then hPutStrLn stderr else const mempty
 
   trace 1 $ show (length optInputs) <> " rendered failures files found"
 

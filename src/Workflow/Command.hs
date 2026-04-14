@@ -84,7 +84,7 @@ checkTestMatrix Options {..} CheckTestMatrixOptions {..} = do
       missing = expected \\ actual
       extra = actual \\ expected
 
-  when optVerbose $ do
+  when (optVerbosity > 0) $ do
     Text.hPutStrLn stderr $ "Cabal:\n  " <> Text.intercalate ", " expected
     Text.hPutStrLn stderr $ "Workflow:\n  " <> Text.intercalate ", " actual
 
