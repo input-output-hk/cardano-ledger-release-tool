@@ -12,7 +12,9 @@ import Data.Either (isLeft)
 import Data.Text.Lazy (Text, unpack)
 import Data.Traversable (for)
 import Options.Applicative
+import System.Directory (doesDirectoryExist)
 import System.Exit (exitFailure)
+import System.FilePath.Find (fileName, find, (&&?), (/=?), (==?))
 import System.IO (hPrint, hPutStrLn, stderr)
 import UnliftIO.Exception (tryAny)
 
@@ -31,7 +33,7 @@ subcmd =
       (progDesc "Operations on the changelogs of a project")
 
 data FormatChangelogsOptions = FormatChangelogsOptions
-  { optChangelogs :: [String]
+  { optFilePaths :: [String]
   , optWriteFile :: FilePath -> Text -> IO ()
   , optBulletHierarchy :: Text
   }
@@ -72,17 +74,35 @@ formatChangelogsCmd =
                 <> metavar "CHARS"
                 <> value "*-+"
                 <> showDefaultWith unpack
-          optChangelogs <-
+          optFilePaths <-
             some . strArgument $
-              help "Changelog files to process"
-                <> metavar "CHANGELOG ..."
+              help "Changelog files and directories to process"
+                <> metavar "(FILE|DIRECTORY) ..."
           pure $ formatChangelogs optCommon FormatChangelogsOptions {..}
       )
-      (progDesc "Parse and reformat changelog files")
+      ( fullDesc
+          <> progDesc "Parse and reformat changelog files"
+          <> footer
+            "Directories given as arguments will be searched recursively for \
+            \files named \"CHANGELOG.md\". \
+            \Directories named \"dist-newstyle\" and \".git\" will be ignored \
+            \when searching."
+      )
+
+findChangelogs :: FilePath -> IO [FilePath]
+findChangelogs fp = do
+  let
+    notIgnoredDir = fileName /=? "dist-newstyle" &&? fileName /=? ".git"
+    isChangelog = fileName ==? "CHANGELOG.md"
+  isDir <- doesDirectoryExist fp
+  if isDir
+    then find notIgnoredDir isChangelog fp
+    else pure [fp]
 
 formatChangelogs :: Options -> FormatChangelogsOptions -> IO ()
 formatChangelogs Options {..} FormatChangelogsOptions {..} = do
-  failure <- fmap (any isLeft) . for optChangelogs $ \fp -> do
+  changelogs <- concat <$> traverse findChangelogs optFilePaths
+  failure <- fmap (any isLeft) . for changelogs $ \fp -> do
     bitraverse (hPrint stderr) pure <=< tryAny $ do
       let
         throwError e = errorWithoutStackTrace $ fp <> ": " <> TL.unpack e

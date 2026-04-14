@@ -4,6 +4,8 @@ Version history for `cardano-ledger-release-tool`
 
 ## 0.4.0.0
 
+* Support passing directories as well as files on the command line
+* Support multiple verbosity levels with `-v`
 * Add a `failures` group of subcommands
 * Handle private repos in the `nix hashes` subcommand
 
