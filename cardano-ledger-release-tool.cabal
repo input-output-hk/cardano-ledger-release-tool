@@ -63,6 +63,7 @@ executable cleret
     cmark,
     containers,
     directory,
+    filemanip,
     filepath,
     microlens,
     microlens-aeson,
