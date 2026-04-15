@@ -1,0 +1,260 @@
+Test suite tests: RUNNING...
+
+Conway era-generic
+  Conway features
+    Proposals
+      Construction
+        Adding new nodes keeps Proposals consistent [[32m✔[0m] (4450ms)
+          +++ OK, passed 100 tests.
+      Removal
+        Removing leaf nodes keeps Proposals consistent [[32m✔[0m] (84ms)
+          +++ OK, passed 100 tests.
+Various tests for functions defined in Conway
+  tierRefScriptFee is a linear function when growth is 1 [[32m✔[0m]
+    +++ OK, passed 100 tests.
+  tierRefScriptFee [[32m✔[0m]
+Shelley era JSON Roundtrip: Conway
+  TransitionConfig ConwayEra [[32m✔[0m] (13312ms)
+    +++ OK, passed 100 tests.
+
+Failures:
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  1) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 9, BBODY, PlutusV1, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "bf97f02604ffd780f1d72d535d60dbcd40e941577e8865f51c311478"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbHash = SafeHash
+                   "4a4a92e1d0ef032bbd837892de45d6eff54e38cb5e282173f0f0ccd007f8020d"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 9/BBODY/PlutusV1/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  2) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 9, BBODY, PlutusV2, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "32c1100dea60b653233e32adb33e20d9a30c8359f7072027ec3e00a0"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbBytes =
+                 "\164\NUL\217\SOH\STX\130\130X \224\135\211\140\244a@{`\253\171\140T\163\172\232\f\161Y\239}\168\246\218\145\167\209\DLE/&'KX@\\T\155$* \132\191\217\226j\252]Q\SO\151\129\187\237\170\168\f\247*\133\ETB\f\138\179\225I\169`\231\145\NULh4nf\NAK+O\163\236\207\136\182\f~\168#\aT\176\154\210U\245\233\235\224\246\r\130X t\151\137[\232\223jZ\171Bx/\226\247\239\202K\194\253\249,h)\180\148\154\163fI\130\168\239X@\192\178\162%&c\206x\214\SYNC\165\200\DELfd\205\184\&4Ci\179.\US\168\147\241\&5&\231,\190\195\211\CAN\160\244J\243fJ\192\&9/\166R\154\190I\SI\ESC\146\139K3\230'\218}\196nW-\SO\ACK\217\SOH\STX\129X(X&\SOH\NUL\NUL\"%35sFn\GS \STX5W:n\168\213\208\154\186#Us\198\234\128\EOTD\128\EOTL\141@\EOT\NULY\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL",
+                 mbHash = SafeHash
+                   "e1fa4bb08d7ab72c4a58b512ad1e13afaa39302a1978555ac8bbe29f3f1576ca"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 9/BBODY/PlutusV2/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  3) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 9, BBODY, PlutusV3, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "5eac0376e2d041e1753d8a5a5f133d4fcdb69ac40c8030bad97bc3ad"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbBytes = mconcat
+                   [
+                     "\164\NUL\217\SOH\STX\130\130X \224\135\211\140\244a@{`\253\171\140T\163\172\232\f\161Y\239}\168\246\218\145\167\209\DLE/&'KX@*\243J\154\159\DC2\228\n",
+                     "\195\180\185\154\219)\155\214\SI\216n\167_g\213\186\189\FS\215\233\218\166@\ETB\204\DC4\235pE-i\175\253y\185Ve\RS\133\248?\167t\186\160J\DC1i\DELh\STX<\190\169\143\ACK\130X t\151\137[\232\223jZ\171Bx/\226\247\239\202K\194\253\249,h)\180\148\154\163fI\130\168\239X@\135\238\221\GS|e\DC4\FS;s\151\193\244I\210\188u\226\241\201'L\130C\215\215\129\DC4\171e\219I\178K\f>\220\177]\185\203\133\249v\136\226F\GS\239Y\f9\STX\198\252\&6\131\207\DC3@}v\199\ETX\a\217\SOH\STX\129X\193X\191\SOH\SOH\NUL%235sFJfj\230\140\220:@\EOTj\174t\NULFL\140\200\140\201L\205\\\209\155\136\NUL4\128\NULL\SOH\146A\ETXPT6\NUL\DC30\SOH\NUL8\SOH\148\NULM]\b\NUL\176\ETX(\SOH`\NUL\EM\CAN\NUL\128\t\DC1H\NUL\204\STX\DC2A\ETXPT7\NUL\145)\153\171\154\&3p\233\NUL\NUL\STX\b\SOH\t\153\EM\128\&0\ETX\NUL\t\155\129\NULD\128\b\NUL@\STXj\174t\NULMU\207\NUL\t\186\163WBj\232\141U\207\NUL\f\146\141(\ENQ(\ESC\170\147#(\NUL\154\186\DLE\STX\154\186\DLE\SOH\154\186\DC3WD\NUL#WD\NUL&\170\231\141\213\NUL\DC4\136\128\EOT)0\152\NUL\164\129\ETXPT5\NUL#&3W8\NUL0\NUL\SOH\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL"],
+                 mbHash = SafeHash
+                   "d2b8f7f8b654b0bafa0ac2d6394c4debfbf8a240b4ce19747c8ddd6f8e258f12"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 9/BBODY/PlutusV3/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  4) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 10, BBODY, PlutusV1, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "bf97f02604ffd780f1d72d535d60dbcd40e941577e8865f51c311478"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbBytes = mconcat
+                   [
+                     "\164\NUL\217\SOH\STX\130\130X \224\135\211\140\244a@{`\253\171\140T\163\172\232\f\161Y\239}\168\246\218\145\167\209\DLE/&'KX@\217OsNe>\189\241\188\RS\139\182UY-\145\217\245K</)\DC3\204@\199\196\194~\202\132\247\239\139T\216\STX\189\b\241\200M\163r!,-H\199\n",
+                     "\240H\146\181\174/\140<:~Cx\232\STX\130X t\151\137[\232\223jZ\171Bx/\226\247\239\202K\194\253\249,h)\180\148\154\163fI\130\168\239X@\166'\145\228 i\212\FS0i\145DS\151P.\140\241r\SOHM\240\146\SYN\225w\135\234\188Zg\145\217^g\212\151\213AQNL\142*K\175\&0\228\187\228\153\246Qf\237yx\206\188\229\253\EOT\232\f\ETX\217\SOH\STX\129X(X&\SOH\NUL\NUL\"%35sFn\GS \STX5W:n\168\213\208\154\186#Us\198\234\128\EOTD\128\EOTL\141@\EOT\NULY\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL"],
+                 mbHash = SafeHash
+                   "4a4a92e1d0ef032bbd837892de45d6eff54e38cb5e282173f0f0ccd007f8020d"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 10/BBODY/PlutusV1/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  5) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 10, BBODY, PlutusV2, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "32c1100dea60b653233e32adb33e20d9a30c8359f7072027ec3e00a0"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbBytes =
+                 "\164\NUL\217\SOH\STX\130\130X \224\135\211\140\244a@{`\253\171\140T\163\172\232\f\161Y\239}\168\246\218\145\167\209\DLE/&'KX@\\T\155$* \132\191\217\226j\252]Q\SO\151\129\187\237\170\168\f\247*\133\ETB\f\138\179\225I\169`\231\145\NULh4nf\NAK+O\163\236\207\136\182\f~\168#\aT\176\154\210U\245\233\235\224\246\r\130X t\151\137[\232\223jZ\171Bx/\226\247\239\202K\194\253\249,h)\180\148\154\163fI\130\168\239X@\192\178\162%&c\206x\214\SYNC\165\200\DELfd\205\184\&4Ci\179.\US\168\147\241\&5&\231,\190\195\211\CAN\160\244J\243fJ\192\&9/\166R\154\190I\SI\ESC\146\139K3\230'\218}\196nW-\SO\ACK\217\SOH\STX\129X(X&\SOH\NUL\NUL\"%35sFn\GS \STX5W:n\168\213\208\154\186#Us\198\234\128\EOTD\128\EOTL\141@\EOT\NULY\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL",
+                 mbHash = SafeHash
+                   "e1fa4bb08d7ab72c4a58b512ad1e13afaa39302a1978555ac8bbe29f3f1576ca"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 10/BBODY/PlutusV2/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  6) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 10, BBODY, PlutusV3, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "5eac0376e2d041e1753d8a5a5f133d4fcdb69ac40c8030bad97bc3ad"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbBytes = mconcat
+                   [
+                     "\164\NUL\217\SOH\STX\130\130X \224\135\211\140\244a@{`\253\171\140T\163\172\232\f\161Y\239}\168\246\218\145\167\209\DLE/&'KX@*\243J\154\159\DC2\228\n",
+                     "\195\180\185\154\219)\155\214\SI\216n\167_g\213\186\189\FS\215\233\218\166@\ETB\204\DC4\235pE-i\175\253y\185Ve\RS\133\248?\167t\186\160J\DC1i\DELh\STX<\190\169\143\ACK\130X t\151\137[\232\223jZ\171Bx/\226\247\239\202K\194\253\249,h)\180\148\154\163fI\130\168\239X@\135\238\221\GS|e\DC4\FS;s\151\193\244I\210\188u\226\241\201'L\130C\215\215\129\DC4\171e\219I\178K\f>\220\177]\185\203\133\249v\136\226F\GS\239Y\f9\STX\198\252\&6\131\207\DC3@}v\199\ETX\a\217\SOH\STX\129X\193X\191\SOH\SOH\NUL%235sFJfj\230\140\220:@\EOTj\174t\NULFL\140\200\140\201L\205\\\209\155\136\NUL4\128\NULL\SOH\146A\ETXPT6\NUL\DC30\SOH\NUL8\SOH\148\NULM]\b\NUL\176\ETX(\SOH`\NUL\EM\CAN\NUL\128\t\DC1H\NUL\204\STX\DC2A\ETXPT7\NUL\145)\153\171\154\&3p\233\NUL\NUL\STX\b\SOH\t\153\EM\128\&0\ETX\NUL\t\155\129\NULD\128\b\NUL@\STXj\174t\NULMU\207\NUL\t\186\163WBj\232\141U\207\NUL\f\146\141(\ENQ(\ESC\170\147#(\NUL\154\186\DLE\STX\154\186\DLE\SOH\154\186\DC3WD\NUL#WD\NUL&\170\231\141\213\NUL\DC4\136\128\EOT)0\152\NUL\164\129\ETXPT5\NUL#&3W8\NUL0\NUL\SOH\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL"],
+                 mbHash = SafeHash
+                   "d2b8f7f8b654b0bafa0ac2d6394c4debfbf8a240b4ce19747c8ddd6f8e258f12"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 10/BBODY/PlutusV3/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  7) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 11, BBODY, PlutusV1, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "bf97f02604ffd780f1d72d535d60dbcd40e941577e8865f51c311478"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbBytes = mconcat
+                   [
+                     "\164\NUL\217\SOH\STX\130\130X \224\135\211\140\244a@{`\253\171\140T\163\172\232\f\161Y\239}\168\246\218\145\167\209\DLE/&'KX@\217OsNe>\189\241\188\RS\139\182UY-\145\217\245K</)\DC3\204@\199\196\194~\202\132\247\239\139T\216\STX\189\b\241\200M\163r!,-H\199\n",
+                     "\240H\146\181\174/\140<:~Cx\232\STX\130X t\151\137[\232\223jZ\171Bx/\226\247\239\202K\194\253\249,h)\180\148\154\163fI\130\168\239X@\166'\145\228 i\212\FS0i\145DS\151P.\140\241r\SOHM\240\146\SYN\225w\135\234\188Zg\145\217^g\212\151\213AQNL\142*K\175\&0\228\187\228\153\246Qf\237yx\206\188\229\253\EOT\232\f\ETX\217\SOH\STX\129X(X&\SOH\NUL\NUL\"%35sFn\GS \STX5W:n\168\213\208\154\186#Us\198\234\128\EOTD\128\EOTL\141@\EOT\NULY\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL"],
+                 mbHash = SafeHash
+                   "4a4a92e1d0ef032bbd837892de45d6eff54e38cb5e282173f0f0ccd007f8020d"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 11/BBODY/PlutusV1/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  8) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 11, BBODY, PlutusV2, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "32c1100dea60b653233e32adb33e20d9a30c8359f7072027ec3e00a0"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbBytes =
+                 "\164\NUL\217\SOH\STX\130\130X \224\135\211\140\244a@{`\253\171\140T\163\172\232\f\161Y\239}\168\246\218\145\167\209\DLE/&'KX@\\T\155$* \132\191\217\226j\252]Q\SO\151\129\187\237\170\168\f\247*\133\ETB\f\138\179\225I\169`\231\145\NULh4nf\NAK+O\163\236\207\136\182\f~\168#\aT\176\154\210U\245\233\235\224\246\r\130X t\151\137[\232\223jZ\171Bx/\226\247\239\202K\194\253\249,h)\180\148\154\163fI\130\168\239X@\192\178\162%&c\206x\214\SYNC\165\200\DELfd\205\184\&4Ci\179.\US\168\147\241\&5&\231,\190\195\211\CAN\160\244J\243fJ\192\&9/\166R\154\190I\SI\ESC\146\139K3\230'\218}\196nW-\SO\ACK\217\SOH\STX\129X(X&\SOH\NUL\NUL\"%35sFn\GS \STX5W:n\168\213\208\154\186#Us\198\234\128\EOTD\128\EOTL\141@\EOT\NULY\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL",
+                 mbHash = SafeHash
+                   "e1fa4bb08d7ab72c4a58b512ad1e13afaa39302a1978555ac8bbe29f3f1576ca"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 11/BBODY/PlutusV2/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  9) Conway era-generic, Conway features, Imp, AlonzoImpSpec, Protocol Version 11, BBODY, PlutusV3, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "5eac0376e2d041e1753d8a5a5f133d4fcdb69ac40c8030bad97bc3ad"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Conway.ImpTest[0m[0;93m:[0m[0;95m315[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Babbage.ImpTest[0m[0;93m:[0m[0;95m83[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 995610
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                 mbBytes = mconcat
+                   [
+                     "\164\NUL\217\SOH\STX\130\130X \224\135\211\140\244a@{`\253\171\140T\163\172\232\f\161Y\239}\168\246\218\145\167\209\DLE/&'KX@*\243J\154\159\DC2\228\n",
+                     "\195\180\185\154\219)\155\214\SI\216n\167_g\213\186\189\FS\215\233\218\166@\ETB\204\DC4\235pE-i\175\253y\185Ve\RS\133\248?\167t\186\160J\DC1i\DELh\STX<\190\169\143\ACK\130X t\151\137[\232\223jZ\171Bx/\226\247\239\202K\194\253\249,h)\180\148\154\163fI\130\168\239X@\135\238\221\GS|e\DC4\FS;s\151\193\244I\210\188u\226\241\201'L\130C\215\215\129\DC4\171e\219I\178K\f>\220\177]\185\203\133\249v\136\226F\GS\239Y\f9\STX\198\252\&6\131\207\DC3@}v\199\ETX\a\217\SOH\STX\129X\193X\191\SOH\SOH\NUL%235sFJfj\230\140\220:@\EOTj\174t\NULFL\140\200\140\201L\205\\\209\155\136\NUL4\128\NULL\SOH\146A\ETXPT6\NUL\DC30\SOH\NUL8\SOH\148\NULM]\b\NUL\176\ETX(\SOH`\NUL\EM\CAN\NUL\128\t\DC1H\NUL\204\STX\DC2A\ETXPT7\NUL\145)\153\171\154\&3p\233\NUL\NUL\STX\b\SOH\t\153\EM\128\&0\ETX\NUL\t\155\129\NULD\128\b\NUL@\STXj\174t\NULMU\207\NUL\t\186\163WBj\232\141U\207\NUL\f\146\141(\ENQ(\ESC\170\147#(\NUL\154\186\DLE\STX\154\186\DLE\SOH\154\186\DC3WD\NUL#WD\NUL&\170\231\141\213\NUL\DC4\136\128\EOT)0\152\NUL\164\129\ETXPT5\NUL#&3W8\NUL0\NUL\SOH\EOT\217\SOH\STX\129\NUL\ENQ\161\130\NUL\SOH\130\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL"],
+                 mbHash = SafeHash
+                   "d2b8f7f8b654b0bafa0ac2d6394c4debfbf8a240b4ce19747c8ddd6f8e258f12"},
+             atIsValid = IsValid True,
+             atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Conway era-generic/Conway features/Imp/AlonzoImpSpec/Protocol Version 11/BBODY/PlutusV3/enforces ppMaxBlockExUnits/" --seed 1358594060
+
+Randomized with seed 1358594060
+
+Finished in 2825.1027 seconds
+[31m1679 examples, 9 failures, 11 pending[0m
+Test suite tests: FAIL
+Test suite logged to: /home/runner/work/cardano-ledger/cardano-ledger/dist-newstyle/build/x86_64-linux/ghc-9.10.3/cardano-ledger-conway-1.22.0.0/t/tests/test/cardano-ledger-conway-1.22.0.0-tests.log

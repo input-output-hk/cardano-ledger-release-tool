@@ -17,7 +17,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest]
-        ghc: ['9.6.7', '9.8.4', '9.10.3', '9.12.2']
+        ghc: ['9.6', '9.8', '9.10', '9.12']
       fail-fast: false
 
     name: Build with GHC ${{ matrix.ghc }} on ${{ matrix.os }}
@@ -49,17 +49,17 @@ jobs:
     - name: Build
       run: cabal build all
 
+    - name: Install nix
+      uses: cachix/install-nix-action@v31
+
     - name: Run tests
       run: cabal test all
 
     - name: Lint changelogs
+      if: matrix.ghc == '9.10.3'
       run: |
         cabal run -- cleret changelogs format -i $(git ls-files '*CHANGELOG.md')
         git diff --exit-code
-
-    - name: Install nix
-      if: matrix.ghc == '9.10.3'
-      uses: cachix/install-nix-action@v31
 
     - name: Check nix hashes
       if: matrix.ghc == '9.10.3'

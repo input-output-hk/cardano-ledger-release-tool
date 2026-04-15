@@ -1,0 +1,74 @@
+Test suite tests: RUNNING...
+
+Alonzo
+  RoundTrip
+    Alonzo era types
+      Data AlonzoEra [[32m✔[0m] (16ms)
+        +++ OK, passed 100 tests.
+      Data AlonzoEra [[32m✔[0m] (6ms)
+        +++ OK, passed 100 tests.
+        fails to deserialize if empty or if it contains duplicates, starting with Conway [[32m✔[0m] (2ms)
+          +++ OK, passed 100 tests.
+        fails to deserialize if empty, starting with Conway [[32m✔[0m] (1ms)
+          +++ OK, passed 100 tests.
+  TxInfo
+    PlutusV1
+      toPlutusTxInfo does not fail when Byron scripts are present in TxOuts [[32m✔[0m] (1ms)
+      toPlutusTxInfo does not fail when Byron scripts are present in TxIns [[32m✔[0m]
+
+Failures:
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  1) Alonzo.Imp.AlonzoImpSpec, Protocol Version 5, BBODY, PlutusV1, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "bf97f02604ffd780f1d72d535d60dbcd40e941577e8865f51c311478"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.ImpTest[0m[0;93m:[0m[0;95m445[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.ImpTest[0m[0;93m:[0m[0;95m358[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 1344798
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+               mbHash = SafeHash
+                 "6241463b58e333dd33b3ce9075c63278c18c308824842035631cfad5dea2ec48"},
+           atIsValid = IsValid True,
+           atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Alonzo/Imp/AlonzoImpSpec/Protocol Version 5/BBODY/PlutusV1/enforces ppMaxBlockExUnits/" --seed 821305710
+
+[36m  testlib/Test/Cardano/Ledger/Alonzo/Imp/BbodySpec.hs:119:11: [0m
+  2) Alonzo.Imp.AlonzoImpSpec, Protocol Version 6, BBODY, PlutusV1, enforces ppMaxBlockExUnits
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2112[0m[0;93m][0m
+         Produced script: ScriptHash "bf97f02604ffd780f1d72d535d60dbcd40e941577e8865f51c311478"
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m323[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.ImpTest[0m[0;93m:[0m[0;95m445[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.ImpTest[0m[0;93m:[0m[0;95m358[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1125[0m[0;93m][0m
+         Fixed up the amount in the TxOut to Coin 1344798
+       [0;93m[[0m[0;94mTest.Cardano.Ledger.Alonzo.Imp.BbodySpec[0m[0;93m:[0m[0;95m103[0m[0;93m][0m
+        └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m2113[0m[0;93m][0m
+          └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1235[0m[0;93m][0m
+            └[0;93m[[0m[0;94mTest.Cardano.Ledger.Shelley.ImpTest[0m[0;93m:[0m[0;95m1248[0m[0;93m][0m
+                   "\164\NUL\130\130X \EM\a\r\EOTf\192\DC4<\192d\134%y\185\222\DEL\211\203\235\SOHn)\SO\152\EOTv\185\158/X-zX@7\172\&6\166\163\137OG\190+y\155\207\224\188Z\178K\130T\\k\b\ETB\173\190\199/\195hYk\140\128\182Mqt\142\SOH\239\148\248\139}`\181\141\186)l\158\149\214U\147\f\196\242\192\233VZ\f\130X \180\139\164\171\248w>\FS\229\218+L\167\v\DLET{\207\193y\196\161\207=#\240\209\181\147\ETB!\183X@\163\198\187\b\186\ETXD<\245Y)\176>\229\133p'N!0T\210a\236X7\245!\239\131}Ov\214\186uI}\248\157\239\135\192\205\219\US\208$C\139^_>onF\226\174\150\237\210\197\133\n",
+                   "\ETX\129X(X&\SOH\NUL\NUL\"%35sFn\GS \STX5W:n\168\213\208\154\186#Us\198\234\128\EOTD\128\EOTL\141@\EOT\NULY\EOT\129\NUL\ENQ\129\132\NUL\SOH\NUL\130\SUB\NUL\152\150\128\ESC\NUL\NUL\NUL\STXT\v\228\NUL"],
+               mbHash = SafeHash
+                 "6241463b58e333dd33b3ce9075c63278c18c308824842035631cfad5dea2ec48"},
+           atIsValid = IsValid True,
+           atAuxData = SNothing}
+       
+       [0;91mDeliberate failure[0m
+
+  To rerun use: --match "/Alonzo/Imp/AlonzoImpSpec/Protocol Version 6/BBODY/PlutusV1/enforces ppMaxBlockExUnits/" --seed 821305710
+
+Randomized with seed 821305710
+
+Finished in 961.9684 seconds
+[31m335 examples, 2 failures, 5 pending[0m
+Test suite tests: FAIL
+Test suite logged to: /home/runner/work/cardano-ledger/cardano-ledger/dist-newstyle/build/x86_64-linux/ghc-9.10.3/cardano-ledger-alonzo-1.15.0.1/t/tests/test/cardano-ledger-alonzo-1.15.0.1-tests.log

@@ -85,7 +85,9 @@ extract Options {..} ExtractOptions {..} = do
         PkgId pName _ = pId
         PkgName name = pName
         suite = name <> ":" <> dispCompNameTarget pName comp
-        file = dir </> "test" </> T.unpack (dispPkgId pId <> "-" <> tName) <.> "log"
+        -- `dir` will usually be absolute, in which case `(root </>)` is a no-op,
+        -- but it's needed in testing because we have to use relative paths there
+        file = root </> dir </> "test" </> T.unpack (dispPkgId pId <> "-" <> tName) <.> "log"
       pure (suite, file)
 
   trace 1 $ show (length suiteLogs) <> " logs found"

@@ -58,7 +58,7 @@ Usage: cleret cabal targets [-v|--verbose] [-p|--project DIR] [-i|--include TYPE
 
 Available options:
   -h,--help                Show this help text
-  -v,--verbose             Produce verbose output
+  -v,--verbose             Increase output verbosity (repeatable)
   -p,--project DIR         The project directory, or a subdirectory of it
                            (default: .)
   -i,--include TYPE        Include targets of type TYPE (repeatable; one of: lib,
@@ -86,17 +86,17 @@ Available commands:
 
 ```
 Usage: cleret changelogs format [-v|--verbose] [(-i|--inplace) | (-o|--output FILE)]
-                                [-b|--bullets CHARS] CHANGELOG ...
+                                [-b|--bullets CHARS] (FILE|DIRECTORY) ...
 
   Parse and reformat changelog files
 
 Available options:
   -h,--help                Show this help text
-  -v,--verbose             Produce verbose output
+  -v,--verbose             Increase output verbosity (repeatable)
   -i,--inplace             Modify files in-place
   -o,--output FILE         Write output to FILE
   -b,--bullets CHARS       Use CHARS for the levels of bullets (default: *-+)
-  CHANGELOG ...            Changelog files to process
+  (FILE|DIRECTORY) ...     Changelog files and directories to process
 ```
 
 Parse and re-render a changelog, as a form of linting; the output is the canonical representation of the changelog. Using `--inplace` followed by `git diff --exit-code` will determine whether the changelog needs to be changed.
@@ -133,7 +133,7 @@ Usage: cleret failures extract [-v|--verbose] [-p|--project DIR] [-o|--output FI
 
 Available options:
   -h,--help                Show this help text
-  -v,--verbose             Produce verbose output
+  -v,--verbose             Increase output verbosity (repeatable)
   -p,--project DIR         The project directory, or a subdirectory of it (default: .)
   -o,--output FILE         Write output to FILE (default: /dev/stdout)
 ```
@@ -154,7 +154,7 @@ Usage: cleret failures render [-v|--verbose] [-o|--output FILE] [FILE ...]
 
 Available options:
   -h,--help                Show this help text
-  -v,--verbose             Produce verbose output
+  -v,--verbose             Increase output verbosity (repeatable)
   -o,--output FILE         Write output to FILE (default: /dev/stdout)
   FILE ...                 JSON files containing failures
 ```
@@ -182,7 +182,7 @@ Usage: cleret nix hashes [-v|--verbose] [-p|--prefetch] [PROJECT-FILE] [LOCK-FIL
 
 Available options:
   -h,--help                Show this help text
-  -v,--verbose             Produce verbose output
+  -v,--verbose             Increase output verbosity (repeatable)
   -p,--prefetch            Prefetch inputs to check hash correctness
   PROJECT-FILE             Cabal project file (default: cabal.project)
   LOCK-FILE                Nix flake lock file (default: flake.lock)
@@ -216,10 +216,10 @@ Usage: cleret workflow check-test-matrix
 
 Available options:
   -h,--help                Show this help text
-  -v,--verbose             Produce verbose output
-  --project DIR            The project directory, or a subdirectory of it
+  -v,--verbose             Increase output verbosity (repeatable)
+  -p,--project DIR         The project directory, or a subdirectory of it
                            (default: .)
-  --workflow FILENAME      The workflow file name (relative to .github/workflows)
+  -w,--workflow FILENAME   The workflow file name (relative to .github/workflows)
                            (default: haskell.yml)
 ```
 

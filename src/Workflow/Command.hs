@@ -50,6 +50,7 @@ checkTestMatrixCmd =
           optProjectDir <-
             strOption $
               help "The project directory, or a subdirectory of it"
+                <> short 'p'
                 <> long "project"
                 <> metavar "DIR"
                 <> value "."
@@ -57,6 +58,7 @@ checkTestMatrixCmd =
           optWorkflowFile <-
             strOption $
               help "The workflow file name (relative to .github/workflows)"
+                <> short 'w'
                 <> long "workflow"
                 <> metavar "FILENAME"
                 <> value "haskell.yml"
@@ -79,6 +81,7 @@ checkTestMatrix Options {..} CheckTestMatrixOptions {..} = do
 
   workflow <- decodeFileThrow $ root </> ".github/workflows" </> optWorkflowFile
 
+  -- We use (\\) instead of sets, to catch repeated occurrences
   let expected = planTests plan
       actual = workflowTests workflow
       missing = expected \\ actual
@@ -104,8 +107,9 @@ planTests plan =
       isTestComp (CompNameTest _) = True
       isTestComp _ = False
       pIdName (PkgId (PkgName name) _) = name
-   -- deduplicate the test package names since a package could have multiple suites
-   in nub $ pIdName . uPId <$> unitsWithTests
+   in -- Deduplicate the test package names since a package could have multiple suites.
+      -- Using `nub` is OK because we're using `\\` above, and the lists are small.
+      nub $ pIdName . uPId <$> unitsWithTests
 
 workflowTests :: Value -> [Text]
 workflowTests v = v ^.. key "jobs" . key "test" . key "strategy" . key "matrix" . key "package" . values . _String
