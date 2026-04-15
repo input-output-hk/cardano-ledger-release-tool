@@ -10,7 +10,15 @@ Releases include static binaries as release artifacts which can be downloaded an
 
 ```yaml
 - name: Install cleret
-  uses: input-output-hk/cardano-ledger-release-tool/actions/install-cleret@0.2
+  uses: input-output-hk/cardano-ledger-release-tool/actions/install-cleret@0.4.0.0
+```
+
+The action can also install `cleret` from any commit whose build artifacts
+haven't expired:
+
+```yaml
+- name: Install cleret
+  uses: input-output-hk/cardano-ledger-release-tool/actions/install-cleret@29d173524551ae2d2c37fab9d4698743ae841ed8
 ```
 
 ## Usage
