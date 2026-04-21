@@ -2,11 +2,17 @@
 
 Utility for managing releases of [cardano-ledger](https://github.com/IntersectMBO/cardano-ledger)
 
-The executable is named `cleret` which is derived from **C**ardano **Le**dger **Re**lease **T**ool. It's also the name of a brand of squeegee, which seems appropriate for a tool that's used to make things squeaky clean.
+The executable is named `cleret` which is derived
+from **C**ardano **Le**dger **Re**lease **T**ool. It's also the name of a brand
+of squeegee, which seems appropriate for a tool that's used to make things
+squeaky clean.
 
 ## Installing
 
-Releases include static binaries as release artifacts which can be downloaded and run in the CI of other repos. This repo also includes a reusable GitHub action that can be used to install the `cleret` executable using its release artifact:
+Releases include static binaries as release artifacts which can be downloaded
+and run in the CI of other repos. This repo also includes a reusable GitHub
+action that can be used to install the `cleret` executable using its release
+asset:
 
 ```yaml
 - name: Install cleret
@@ -107,7 +113,9 @@ Available options:
   (FILE|DIRECTORY) ...     Changelog files and directories to process
 ```
 
-Parse and re-render a changelog, as a form of linting; the output is the canonical representation of the changelog. Using `--inplace` followed by `git diff --exit-code` will determine whether the changelog needs to be changed.
+Parse and re-render a changelog, as a form of linting; the output is the
+canonical representation of the changelog. Using `--inplace` followed by `git
+diff --exit-code` will determine whether the changelog needs to be changed.
 
 ### `failures`
 
@@ -231,7 +239,8 @@ Available options:
                            (default: haskell.yml)
 ```
 
-Outputs the differences between the actual and the expected, and exits with a non-zero status if there are differences.
+Outputs the differences between the actual and the expected, and exits with a
+non-zero status if there are differences.
 
 ## Building the Code
 
