@@ -60,26 +60,75 @@ Available options:
 
 Available commands:
   targets                  List the targets in a Cabal project
+  list-bins                List the binaries in a Cabal project
+  run                      Run the executables in a Cabal project
+  test                     Run the tests in a Cabal project
 ```
 
 #### `cabal targets`
 
 ```
-Usage: cleret cabal targets [-v|--verbose] [-p|--project DIR] [-i|--include TYPE]
-                            [-x|--exclude TYPE] [PACKAGE ...]
+Usage: cleret cabal targets [-v|--verbose] [-i|--include TYPE] [-x|--exclude TYPE]
+                            [-p|--project DIR] [NAME ...]
 
   List the targets in a Cabal project
 
 Available options:
   -h,--help                Show this help text
   -v,--verbose             Increase output verbosity (repeatable)
-  -p,--project DIR         The project directory, or a subdirectory of it
-                           (default: .)
-  -i,--include TYPE        Include targets of type TYPE (repeatable; one of: lib,
-                           flib, exe, test, bench, setup)
-  -x,--exclude TYPE        Exclude targets of type TYPE (repeatable; one of: lib,
-                           flib, exe, test, bench, setup)
-  PACKAGE ...              Show targets for PACKAGE ... (default: all packages)
+  -i,--include TYPE        Include components of type TYPE (repeatable; one of: lib, flib, exe,
+                           test, bench, setup)
+  -x,--exclude TYPE        Exclude components of type TYPE (repeatable; one of: lib, flib, exe,
+                           test, bench, setup)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
+  NAME ...                 Select components named NAME or in package NAME (default: all components)
+```
+
+#### `cabal list-bins`
+
+```
+Usage: cleret cabal list-bins [-v|--verbose] [-i|--include TYPE] [-x|--exclude TYPE]
+                              [-p|--project DIR] [NAME ...]
+
+  List the binaries in a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Increase output verbosity (repeatable)
+  -i,--include TYPE        Include components of type TYPE (repeatable; one of: lib, flib, exe,
+                           test, bench, setup)
+  -x,--exclude TYPE        Exclude components of type TYPE (repeatable; one of: lib, flib, exe,
+                           test, bench, setup)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
+  NAME ...                 Select components named NAME or in package NAME (default: all components)
+```
+
+#### `cabal run`
+
+```
+Usage: cleret cabal run [-v|--verbose] [-p|--project DIR] [NAME ...]
+
+  Run the executables in a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Increase output verbosity (repeatable)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
+  NAME ...                 Select components named NAME or in package NAME (default: all components)
+```
+
+#### `cabal test`
+
+```
+Usage: cleret cabal test [-v|--verbose] [-p|--project DIR] [NAME ...]
+
+  Run the tests in a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Increase output verbosity (repeatable)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
+  NAME ...                 Select components named NAME or in package NAME (default: all components)
 ```
 
 ### `changelogs`

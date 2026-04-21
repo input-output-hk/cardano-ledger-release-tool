@@ -4,6 +4,7 @@ Version history for `cardano-ledger-release-tool`
 
 ## 0.4.0.0
 
+* Add new `cabal` subcommands: `list-bins`, `run`, `test`
 * Output changelog parsing errors without colour
 * Sort the output of `cabal targets`
 * Add short option variants to `workflow check-test-matrix`
