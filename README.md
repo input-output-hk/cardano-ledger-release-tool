@@ -2,11 +2,17 @@
 
 Utility for managing releases of [cardano-ledger](https://github.com/IntersectMBO/cardano-ledger)
 
-The executable is named `cleret` which is derived from **C**ardano **Le**dger **Re**lease **T**ool. It's also the name of a brand of squeegee, which seems appropriate for a tool that's used to make things squeaky clean.
+The executable is named `cleret` which is derived
+from **C**ardano **Le**dger **Re**lease **T**ool. It's also the name of a brand
+of squeegee, which seems appropriate for a tool that's used to make things
+squeaky clean.
 
 ## Installing
 
-Releases include static binaries as release artifacts which can be downloaded and run in the CI of other repos. This repo also includes a reusable GitHub action that can be used to install the `cleret` executable using its release artifact:
+Releases include static binaries as release artifacts which can be downloaded
+and run in the CI of other repos. This repo also includes a reusable GitHub
+action that can be used to install the `cleret` executable using its release
+asset:
 
 ```yaml
 - name: Install cleret
@@ -54,26 +60,75 @@ Available options:
 
 Available commands:
   targets                  List the targets in a Cabal project
+  list-bins                List the binaries in a Cabal project
+  run                      Run the executables in a Cabal project
+  test                     Run the tests in a Cabal project
 ```
 
 #### `cabal targets`
 
 ```
-Usage: cleret cabal targets [-v|--verbose] [-p|--project DIR] [-i|--include TYPE]
-                            [-x|--exclude TYPE] [PACKAGE ...]
+Usage: cleret cabal targets [-v|--verbose] [-i|--include TYPE] [-x|--exclude TYPE]
+                            [-p|--project DIR] [NAME ...]
 
   List the targets in a Cabal project
 
 Available options:
   -h,--help                Show this help text
   -v,--verbose             Increase output verbosity (repeatable)
-  -p,--project DIR         The project directory, or a subdirectory of it
-                           (default: .)
-  -i,--include TYPE        Include targets of type TYPE (repeatable; one of: lib,
-                           flib, exe, test, bench, setup)
-  -x,--exclude TYPE        Exclude targets of type TYPE (repeatable; one of: lib,
-                           flib, exe, test, bench, setup)
-  PACKAGE ...              Show targets for PACKAGE ... (default: all packages)
+  -i,--include TYPE        Include components of type TYPE (repeatable; one of: lib, flib, exe,
+                           test, bench, setup)
+  -x,--exclude TYPE        Exclude components of type TYPE (repeatable; one of: lib, flib, exe,
+                           test, bench, setup)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
+  NAME ...                 Select components named NAME or in package NAME (default: all components)
+```
+
+#### `cabal list-bins`
+
+```
+Usage: cleret cabal list-bins [-v|--verbose] [-i|--include TYPE] [-x|--exclude TYPE]
+                              [-p|--project DIR] [NAME ...]
+
+  List the binaries in a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Increase output verbosity (repeatable)
+  -i,--include TYPE        Include components of type TYPE (repeatable; one of: lib, flib, exe,
+                           test, bench, setup)
+  -x,--exclude TYPE        Exclude components of type TYPE (repeatable; one of: lib, flib, exe,
+                           test, bench, setup)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
+  NAME ...                 Select components named NAME or in package NAME (default: all components)
+```
+
+#### `cabal run`
+
+```
+Usage: cleret cabal run [-v|--verbose] [-p|--project DIR] [NAME ...]
+
+  Run the executables in a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Increase output verbosity (repeatable)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
+  NAME ...                 Select components named NAME or in package NAME (default: all components)
+```
+
+#### `cabal test`
+
+```
+Usage: cleret cabal test [-v|--verbose] [-p|--project DIR] [NAME ...]
+
+  Run the tests in a Cabal project
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Increase output verbosity (repeatable)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
+  NAME ...                 Select components named NAME or in package NAME (default: all components)
 ```
 
 ### `changelogs`
@@ -107,7 +162,9 @@ Available options:
   (FILE|DIRECTORY) ...     Changelog files and directories to process
 ```
 
-Parse and re-render a changelog, as a form of linting; the output is the canonical representation of the changelog. Using `--inplace` followed by `git diff --exit-code` will determine whether the changelog needs to be changed.
+Parse and re-render a changelog, as a form of linting; the output is the
+canonical representation of the changelog. Using `--inplace` followed by `git
+diff --exit-code` will determine whether the changelog needs to be changed.
 
 ### `failures`
 
@@ -231,7 +288,8 @@ Available options:
                            (default: haskell.yml)
 ```
 
-Outputs the differences between the actual and the expected, and exits with a non-zero status if there are differences.
+Outputs the differences between the actual and the expected, and exits with a
+non-zero status if there are differences.
 
 ## Building the Code
 
