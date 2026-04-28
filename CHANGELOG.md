@@ -4,7 +4,7 @@ Version history for `cardano-ledger-release-tool`
 
 ## 0.4.0.1
 
-*
+* Refactor CI artifact handling and installation
 
 ## 0.4.0.0
 

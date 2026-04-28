@@ -21,6 +21,8 @@ jobs:
 
     outputs:
       artifact: ${{ steps.result.outputs.artifact }}
+      archive: ${{ steps.result.outputs.archive }}
+      format: ${{ steps.result.outputs.format }}
 
     steps:
 
@@ -39,15 +41,19 @@ jobs:
       run: |
         derivation=$(nix derivation show ./result | jq -r '(.derivations // .).[].env.name')
         artifact=$derivation-$(uname -s)-$(uname -m)
-        products=$(find -L result -type f)
+        format=tzst
+        archive=$artifact.$format
+        mv result "$artifact"
+        tar -chaf "$archive" "$artifact"
         echo "artifact=$artifact" >>"$GITHUB_OUTPUT"
-        echo "products=$products" >>"$GITHUB_OUTPUT"
+        echo "archive=$archive" >>"$GITHUB_OUTPUT"
+        echo "format=$format" >>"$GITHUB_OUTPUT"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v7
       with:
         name: ${{ steps.result.outputs.artifact }}
-        path: ${{ steps.result.outputs.products }}
+        path: ${{ steps.result.outputs.archive }}
 
   release:
     if: github.ref_type == 'tag' || inputs.version
@@ -67,29 +73,27 @@ jobs:
       uses: actions/download-artifact@v8
       with:
         name: ${{ needs.build.outputs.artifact }}
-        path: artifact
 
     - name: Create release content
       id: content
       run: |
         version='${{ github.ref_type == 'tag' && github.ref_name || inputs.version }}'
         release='${{ needs.build.outputs.artifact }}'-$version
-        archive=$release.tgz
-        mv artifact "$release"
-        tar -czf "$archive" "$release"
+        asset=$release.'${{ needs.build.outputs.format }}'
         notes=$release.md
+        mv '${{ needs.build.outputs.archive }}' "$asset"
         cat <<EOF >"$notes"
         See [CHANGELOG.md](${{ github.server_url }}/${{ github.repository }}/blob/main/CHANGELOG.md)
         EOF
         echo "version=$version" >>"$GITHUB_OUTPUT"
-        echo "archive=$archive" >>"$GITHUB_OUTPUT"
+        echo "asset=$asset" >>"$GITHUB_OUTPUT"
         echo "notes=$notes" >>"$GITHUB_OUTPUT"
 
     - name: Create release
       run: |
         gh release create \
           '${{ steps.content.outputs.version }}' \
-          '${{ steps.content.outputs.archive }}' \
+          '${{ steps.content.outputs.asset }}' \
           --notes-file '${{ steps.content.outputs.notes }}' \
           --repo '${{ github.repository }}' \
           --target '${{ github.sha }}' \
