@@ -17,12 +17,14 @@ runs:
       # it typically isn't when testing a workflow locally with `act`.
       type gh || { sudo apt-get update && sudo apt-get install -y gh; }
 
+      PLATFORM=$(uname -s)-$(uname -m)
+      DOWNLOAD=$(mktemp -d)
+      trap 'chmod -R u+w "$DOWNLOAD"; rm -rf "$DOWNLOAD"' EXIT
+
       if gh release view -R "$REPO" "$RELEASE" --json '' >/dev/null
       then
         echo "Downloading asset from release $RELEASE"
-        PLATFORM=$(uname -s)-$(uname -m)
-        gh release download -O - -R "$REPO" "$RELEASE" -p "*-$PLATFORM-*.tgz" |
-          tar -xz --strip-components=1 --wildcards -C "$BINDIR" '*/cleret'
+        gh release download -R "$REPO" "$RELEASE" -D "$DOWNLOAD" -p "*-$PLATFORM*"
       else
         echo "Downloading artifact from commit $RELEASE"
         RUNID=$(gh run list -R "$REPO" -c "$RELEASE" -w 'Nix Build' --json 'databaseId' -q '.[0].databaseId')
@@ -31,8 +33,8 @@ runs:
           echo >&2 "No run found for commit $RELEASE"
           exit 1
         fi
-        DOWNLOAD=$(mktemp -d)
-        trap 'rm -rf "$DOWNLOAD"' EXIT
-        gh run download -R "$REPO" "$RUNID" -D "$DOWNLOAD"
-        install "$DOWNLOAD"/*/cleret "$BINDIR"
+        gh run download -R "$REPO" "$RUNID" -D "$DOWNLOAD" -p "*-$PLATFORM*"
       fi
+
+      tar -xf "$(find "$DOWNLOAD" -type f)" -C "$DOWNLOAD"
+      install "$(find "$DOWNLOAD" -path '*/bin/cleret')" "$BINDIR"
