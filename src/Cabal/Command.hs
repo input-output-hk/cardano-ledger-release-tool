@@ -2,18 +2,22 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
+{-# LANGUAGE TypeApplications #-}
 
 module Cabal.Command (subcmd) where
 
 import Cabal.Plan
 import Common.Options (Options (..), options, subparsers)
 import Control.Monad (unless, when)
+import Data.Aeson (Value, eitherDecodeFileStrict, encodeFile)
 import Data.Bool (bool)
 import Data.Char (toLower, toUpper)
 import Data.Foldable (for_)
 import Data.List (intercalate, sort, stripPrefix, (\\))
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
+import Lens.Micro ((%~))
+import Lens.Micro.Aeson (members, values, _String)
 import Options.Applicative
 import System.Directory (doesDirectoryExist, makeAbsolute)
 import System.Environment (getEnvironment)
@@ -34,6 +38,7 @@ subcmd =
           <*> subparsers
             [ targetsCmd
             , listBinsCmd
+            , relativizeCmd
             , runCmd
             , testCmd
             ]
@@ -69,6 +74,16 @@ compTypeOptions = do
   initial f (c : s) = f c : s
   initial _ s = s
 
+projectOption :: Parser FilePath
+projectOption =
+  strOption $
+    help "The project directory, or a subdirectory of it"
+      <> short 'p'
+      <> long "project"
+      <> metavar "DIR"
+      <> value "."
+      <> showDefaultWith id
+
 data CabalOptions = CabalOptions
   { optProjectDir :: FilePath
   , optNames :: [Text]
@@ -77,14 +92,7 @@ data CabalOptions = CabalOptions
 
 cabalOptions :: Parser CabalOptions
 cabalOptions = do
-  optProjectDir <-
-    strOption $
-      help "The project directory, or a subdirectory of it"
-        <> short 'p'
-        <> long "project"
-        <> metavar "DIR"
-        <> value "."
-        <> showDefaultWith id
+  optProjectDir <- projectOption
   optNames <-
     many . strArgument $
       help "Select components named NAME or in package NAME (default: all components)"
@@ -105,6 +113,13 @@ listBinsCmd =
       (helper <*> (listBins <$> options <*> compTypeOptions <*> cabalOptions))
       (progDesc "List the binaries in a Cabal project")
 
+relativizeCmd :: Mod CommandFields (IO ())
+relativizeCmd =
+  command "relativize-plan" $
+    info
+      (helper <*> (relativize <$> options <*> projectOption))
+      (progDesc "Make the file paths in a Cabal plan relative")
+
 runCmd :: Mod CommandFields (IO ())
 runCmd =
   command "run" $
@@ -120,21 +135,35 @@ testCmd =
       (progDesc "Run the tests in a Cabal project")
 
 targets :: Options -> [CompType] -> CabalOptions -> IO ()
-targets optCommon optCompTypes optCabal@CabalOptions {..} = do
-  (_root, plan) <- getProjectPlan optCommon optCabal
+targets optCommon optCompTypes CabalOptions {..} = do
+  (_root, plan) <- getProjectPlan optCommon optProjectDir
   T.putStr . T.unlines . sort $
     [ dispCompNameTargetFull pkg comp
     | (pkg, comp, _ci, _src) <- planComponents optNames optCompTypes plan
     ]
 
 listBins :: Options -> [CompType] -> CabalOptions -> IO ()
-listBins optCommon optCompTypes optCabal@CabalOptions {..} = do
-  (_root, plan) <- getProjectPlan optCommon optCabal
+listBins optCommon optCompTypes CabalOptions {..} = do
+  (_root, plan) <- getProjectPlan optCommon optProjectDir
   T.putStr . T.unlines . sort $
     [ T.pack bin
     | (_p, _cn, comp, _src) <- planComponents optNames optCompTypes plan
     , Just bin <- [ciBinFile comp]
     ]
+
+relativize :: Options -> FilePath -> IO ()
+relativize optCommon projectDir = do
+  (rootDir, planFile) <- getProjectPlanFile optCommon projectDir
+
+  plan <- either die pure =<< eitherDecodeFileStrict @Value planFile
+
+  let
+    root = T.pack rootDir <> "/"
+    dropRoot s = fromMaybe s $ T.stripPrefix root s
+    relativizeString = _String %~ dropRoot
+    relativizeStrings = relativizeString . (members %~ relativizeStrings) . (values %~ relativizeStrings)
+
+  encodeFile planFile $ relativizeStrings plan
 
 run :: Options -> CabalOptions -> IO ()
 run = runComponents [CompTypeExe]
@@ -143,9 +172,9 @@ test :: Options -> CabalOptions -> IO ()
 test = runComponents [CompTypeTest]
 
 runComponents :: [CompType] -> Options -> CabalOptions -> IO ()
-runComponents compTypes optCommon@Options {..} optCabal@CabalOptions {..} = do
+runComponents compTypes optCommon@Options {..} CabalOptions {..} = do
   hSetBuffering stderr LineBuffering
-  (rootDir, plan) <- getProjectPlan optCommon optCabal
+  (rootDir, plan) <- getProjectPlan optCommon optProjectDir
   env <- getEnvironment
   let
     bins =
@@ -174,21 +203,29 @@ runComponents compTypes optCommon@Options {..} optCabal@CabalOptions {..} = do
       ExitFailure n -> die $ name <> " failed with exit code " <> show n
       ExitSuccess -> pure ()
 
-getProjectPlan :: Options -> CabalOptions -> IO (FilePath, PlanJson)
-getProjectPlan Options {..} CabalOptions {..} = do
+getProjectPlanFile :: Options -> FilePath -> IO (FilePath, FilePath)
+getProjectPlanFile Options {..} projectDir = do
   -- Avoid confusing behaviour from `findProjectRoot`
-  doesDirectoryExist optProjectDir
-    >>= bool (die $ "Project directory " <> optProjectDir <> " doesn't exist") (pure ())
+  doesDirectoryExist projectDir
+    >>= bool (die $ "Project directory " <> projectDir <> " doesn't exist") (pure ())
 
   root <-
-    findProjectRoot optProjectDir
-      >>= maybe (die $ "Can't find project root in " <> optProjectDir) pure
+    findProjectRoot projectDir
+      >>= maybe (die $ "Can't find project root in " <> projectDir) pure
 
   when (optVerbosity > 0) $
     hPutStrLn stderr $
       "Examining " <> root
 
-  plan <- findAndDecodePlanJson $ ProjectRelativeToDir root
+  planFile <- findPlanJson $ ProjectRelativeToDir root
+
+  pure (root, planFile)
+
+getProjectPlan :: Options -> FilePath -> IO (FilePath, PlanJson)
+getProjectPlan optCommon@Options {..} projectDir = do
+  (root, planFile) <- getProjectPlanFile optCommon projectDir
+
+  plan <- decodePlanJson planFile
 
   when (optVerbosity > 0) $
     hPutStrLn stderr $
