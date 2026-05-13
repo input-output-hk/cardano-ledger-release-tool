@@ -2,9 +2,9 @@
 
 Version history for `cardano-ledger-release-tool`
 
-## 0.4.0.2
+## 0.5.0.0
 
-*
+* Add the `cabal relativize-plan` subcommand
 
 ## 0.4.0.1
 

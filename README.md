@@ -61,6 +61,7 @@ Available options:
 Available commands:
   targets                  List the targets in a Cabal project
   list-bins                List the binaries in a Cabal project
+  relativize-plan          Make the file paths in a Cabal plan relative
   run                      Run the executables in a Cabal project
   test                     Run the tests in a Cabal project
 ```
@@ -101,6 +102,19 @@ Available options:
                            test, bench, setup)
   -p,--project DIR         The project directory, or a subdirectory of it (default: .)
   NAME ...                 Select components named NAME or in package NAME (default: all components)
+```
+
+#### `cabal relativize-plan`
+
+```
+Usage: cleret cabal relativize-plan [-v|--verbose] [-p|--project DIR]
+
+  Make the file paths in a Cabal plan relative
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Increase output verbosity (repeatable)
+  -p,--project DIR         The project directory, or a subdirectory of it (default: .)
 ```
 
 #### `cabal run`
