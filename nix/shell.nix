@@ -19,6 +19,9 @@ let
     # Compiler+tool combinations, eg
     # ghc910.foobar = toolVariants.ghc96.foobar; # foobar not buildable with ghc910
     # ghc912.xyzzy = project.projectVariants.ghc912.tool "xyzzy" "1.2.3";
+    ghc914.fourmolu = toolVariants.ghc912.fourmolu;
+    ghc914.haskell-language-server = null;
+    ghc914.hlint = toolVariants.ghc912.hlint;
   };
 
   tools = toolVariants.${ghc} // (toolOverrides.${ghc} or { });
