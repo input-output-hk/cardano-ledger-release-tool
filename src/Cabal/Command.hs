@@ -14,17 +14,17 @@ import Data.Aeson (Value, eitherDecodeFileStrict, encodeFile)
 import Data.Bool (bool)
 import Data.ByteString.Builder (byteString, hPutBuilder)
 import Data.Char (toLower, toUpper)
-import Data.Foldable (for_)
 import Data.Function (fix)
 import Data.List (intercalate, sort, stripPrefix, (\\))
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
+import Data.Traversable (for)
 import Lens.Micro ((%~))
 import Lens.Micro.Aeson (members, values, _String)
 import Options.Applicative
 import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, makeAbsolute)
 import System.Environment (getEnvironment)
-import System.Exit (ExitCode (..), die)
+import System.Exit (ExitCode (..), die, exitFailure)
 import System.FilePath (takeDirectory, (<.>), (</>))
 import System.IO (
   Handle,
@@ -196,7 +196,12 @@ runComponents compTypes optCommon@Options {..} CabalOptions {..} = do
   (rootDir, plan) <- getProjectPlan optCommon optProjectDir
   env <- getEnvironment
   let bins = sort $ planBins optNames compTypes plan
-  for_ bins $ \(pkgId, compName, dir, src, bin) -> do
+
+  when (optVerbosity > 0) $ do
+    hPutStrLn stderr $ show (length bins) <> " matching binaries"
+    hFlush stderr
+
+  failures <- fmap sum . for bins $ \(pkgId, compName, dir, src, bin) -> do
     absBin <- makeAbsolute bin
     absSrc <- makeAbsolute src
     let
@@ -243,9 +248,16 @@ runComponents compTypes optCommon@Options {..} CabalOptions {..} = do
         withCreateProcess binProc $ \_ _ _ -> waitForProcess
 
     case exitCode of
-      -- TODO: continue with other bins
-      ExitFailure n -> die $ name <> " failed with exit code " <> show n
-      ExitSuccess -> pure ()
+      ExitFailure n -> do
+        hPutStrLn stderr $ name <> " failed with exit code " <> show n
+        hFlush stderr
+        pure (1 :: Int)
+      ExitSuccess ->
+        pure (0 :: Int)
+
+  unless (failures == 0) $ do
+    hPutStrLn stderr $ "There were " <> show failures <> " failures"
+    exitFailure
 
 logger :: Handle -> Handle -> IO ()
 logger pipe file = fix $ \self -> do
