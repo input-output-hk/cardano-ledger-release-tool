@@ -8,24 +8,45 @@ module Cabal.Command (subcmd) where
 
 import Cabal.Plan
 import Common.Options (Options (..), options, subparsers)
+import Control.Concurrent.Async (concurrently)
 import Control.Monad (unless, when)
 import Data.Aeson (Value, eitherDecodeFileStrict, encodeFile)
 import Data.Bool (bool)
+import Data.ByteString.Builder (byteString, hPutBuilder)
 import Data.Char (toLower, toUpper)
 import Data.Foldable (for_)
+import Data.Function (fix)
 import Data.List (intercalate, sort, stripPrefix, (\\))
 import Data.Maybe (fromMaybe)
 import Data.Text (Text)
 import Lens.Micro ((%~))
 import Lens.Micro.Aeson (members, values, _String)
 import Options.Applicative
-import System.Directory (doesDirectoryExist, makeAbsolute)
+import System.Directory (createDirectoryIfMissing, doesDirectoryExist, doesFileExist, makeAbsolute)
 import System.Environment (getEnvironment)
 import System.Exit (ExitCode (..), die)
-import System.IO (BufferMode (..), hPutStrLn, hSetBuffering, stderr)
-import System.Process (CreateProcess (..), proc, waitForProcess, withCreateProcess)
+import System.FilePath (takeDirectory, (<.>), (</>))
+import System.IO (
+  Handle,
+  IOMode (WriteMode),
+  hClose,
+  hFlush,
+  hPutStrLn,
+  stderr,
+  stdout,
+  withBinaryFile,
+ )
+import System.Process (
+  CreateProcess (..),
+  StdStream (UseHandle),
+  createPipe,
+  proc,
+  waitForProcess,
+  withCreateProcess,
+ )
 import Text.Read (readMaybe)
 
+import qualified Data.ByteString as BS
 import qualified Data.Map.Strict as Map
 import qualified Data.Text as T
 import qualified Data.Text.IO as T
@@ -139,7 +160,7 @@ targets optCommon optCompTypes CabalOptions {..} = do
   (_root, plan) <- getProjectPlan optCommon optProjectDir
   T.putStr . T.unlines . sort $
     [ dispCompNameTargetFull pkg comp
-    | (pkg, comp, _ci, _src) <- planComponents optNames optCompTypes plan
+    | (PkgId pkg _, comp, _dir, _src, _bin) <- planComponents optNames optCompTypes plan
     ]
 
 listBins :: Options -> [CompType] -> CabalOptions -> IO ()
@@ -147,8 +168,7 @@ listBins optCommon optCompTypes CabalOptions {..} = do
   (_root, plan) <- getProjectPlan optCommon optProjectDir
   T.putStr . T.unlines . sort $
     [ T.pack bin
-    | (_p, _cn, comp, _src) <- planComponents optNames optCompTypes plan
-    , Just bin <- [ciBinFile comp]
+    | (_p, _cn, _dir, _src, bin) <- planBins optNames optCompTypes plan
     ]
 
 relativize :: Options -> FilePath -> IO ()
@@ -173,35 +193,69 @@ test = runComponents [CompTypeTest]
 
 runComponents :: [CompType] -> Options -> CabalOptions -> IO ()
 runComponents compTypes optCommon@Options {..} CabalOptions {..} = do
-  hSetBuffering stderr LineBuffering
   (rootDir, plan) <- getProjectPlan optCommon optProjectDir
   env <- getEnvironment
-  let
-    bins =
-      sort $
-        [ (pkgName, compName, bin, src)
-        | (pkgName, compName, compInfo, srcLoc) <- planComponents optNames compTypes plan
-        , Just bin <- [ciBinFile compInfo]
-        , Just (LocalUnpackedPackage src) <- [srcLoc]
-        ]
-  for_ bins $ \(pkg, comp, bin, src) -> do
+  let bins = sort $ planBins optNames compTypes plan
+  for_ bins $ \(pkgId, compName, dir, src, bin) -> do
     absBin <- makeAbsolute bin
     absSrc <- makeAbsolute src
     let
       -- TODO: Figure out how to handle `data-dir` field which isn't surfaced in `plan.json`
-      varName = T.unpack $ T.map fixchar (unPkgName pkg) <> "_datadir"
+      PkgId pkgName _ver = pkgId
+      varName = T.unpack $ T.map fixchar (unPkgName pkgName) <> "_datadir"
       fixchar '-' = '_'
       fixchar c = c
-      -- TODO: Add other variables (eg `_bindir`) if needed
+      -- TODO: Add other environment variables (eg `_bindir`) if needed
       extraEnv = [(varName, absSrc)]
-      cwd = if fst (unCompName comp) `elem` [CompTypeExe, CompTypeSetup] then rootDir else src
+      cwd = if fst (unCompName compName) `elem` [CompTypeExe, CompTypeSetup] then rootDir else src
       binProc = (proc absBin []) {env = Just $ extraEnv <> env, cwd = Just cwd}
-      name = T.unpack $ dispCompNameTargetFull pkg comp
+      name = T.unpack $ dispCompNameTargetFull pkgName compName
+
     unless (optVerbosity == 0 && null (drop 1 bins)) $ do
       hPutStrLn stderr $ "Running " <> name
-    withCreateProcess binProc (\_ _ _ -> waitForProcess) >>= \case
+      hFlush stderr
+
+    binExists <- doesFileExist absBin
+    unless binExists $ die $ "Binary missing: " <> absBin
+
+    cwdExists <- doesDirectoryExist cwd
+    unless cwdExists $ die $ "Working directory missing: " <> cwd
+
+    exitCode <- case compName of
+      CompNameTest testName -> do
+        -- Send output to stdout and a file
+        -- `dir` will usually be absolute, in which case `(rootDir </>)` is a no-op,
+        -- but it's needed for testing because we have to use relative paths there
+        let logPath = rootDir </> dir </> "test" </> T.unpack (dispPkgId pkgId <> "-" <> testName) <.> "log"
+
+        createDirectoryIfMissing True $ takeDirectory logPath
+
+        withBinaryFile logPath WriteMode $ \logHandle -> do
+          (readEnd, writeEnd) <- createPipe
+
+          let pipedProc = binProc {std_out = UseHandle writeEnd, std_err = UseHandle writeEnd}
+
+          withCreateProcess pipedProc $ \_ _ _ ph -> do
+            hClose writeEnd
+            snd <$> concurrently (logger readEnd logHandle) (waitForProcess ph)
+      _ -> do
+        -- Send output to stdout
+        withCreateProcess binProc $ \_ _ _ -> waitForProcess
+
+    case exitCode of
+      -- TODO: continue with other bins
       ExitFailure n -> die $ name <> " failed with exit code " <> show n
       ExitSuccess -> pure ()
+
+logger :: Handle -> Handle -> IO ()
+logger pipe file = fix $ \self -> do
+  chunk <- BS.hGetSome pipe (64 * 1024)
+  unless (BS.null chunk) $ do
+    let b = byteString chunk
+    hPutBuilder stdout b
+    hFlush stdout
+    hPutBuilder file b
+    self
 
 getProjectPlanFile :: Options -> FilePath -> IO (FilePath, FilePath)
 getProjectPlanFile Options {..} projectDir = do
@@ -233,17 +287,26 @@ getProjectPlan optCommon@Options {..} projectDir = do
 
   pure (root, plan)
 
-planComponents :: [Text] -> [CompType] -> PlanJson -> [(PkgName, CompName, CompInfo, Maybe PkgLoc)]
+planBins :: [Text] -> [CompType] -> PlanJson -> [(PkgId, CompName, FilePath, FilePath, FilePath)]
+planBins names compTypes plan =
+  [ (pkgId, compName, dir, src, bin)
+  | (pkgId, compName, dir, src, Just bin) <- planComponents names compTypes plan
+  ]
+
+planComponents :: [Text] -> [CompType] -> PlanJson -> [(PkgId, CompName, FilePath, FilePath, Maybe FilePath)]
 planComponents names compTypes plan =
   let pkgNames = names
       compNames = Just <$> names
-   in [ (pkgName, compName, compInfo, srcLoc)
+   in [ (pkgId, compName, dir, src, bin)
       | unit <- Map.elems $ pjUnitsWithType UnitTypeLocal plan
       , (compName, compInfo) <- Map.toList $ uComps unit
       , fst (unCompName compName) `elem` compTypes
-      , let (PkgId pkgName _) = uPId unit
+      , let pkgId = uPId unit
+      , let (PkgId pkgName _) = pkgId
+      , let bin = ciBinFile compInfo
       , null names || unPkgName pkgName `elem` pkgNames || snd (unCompName compName) `elem` compNames
-      , srcLoc <- [uPkgSrc unit]
+      , Just dir <- [uDistDir unit]
+      , Just (LocalUnpackedPackage src) <- [uPkgSrc unit]
       ]
 
 data CompType
