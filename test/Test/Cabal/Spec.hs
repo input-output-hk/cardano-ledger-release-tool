@@ -34,6 +34,12 @@ spec = do
       modifyFile planFile $ T.replace "dist-newstyle" (T.pack $ projectDir </> "dist-newstyle")
       callProcess "cleret" ["cabal", "relativize-plan", "-p", projectDir]
       goldenTest expected =<< T.readFile planFile
+  specify "run" $ do
+    projectFixture <- fixturePath "Cabal"
+    expected <- fixturePath "Cabal/run.golden"
+    withTempProject projectFixture $ \projectDir -> do
+      actual <- T.pack <$> readProcess "cleret" ["cabal", "run", "-p", projectDir, "plutus-debug"] ""
+      goldenTest expected actual
 
 withTempProject :: FilePath -> (FilePath -> IO ()) -> IO ()
 withTempProject projectFixture action = do
