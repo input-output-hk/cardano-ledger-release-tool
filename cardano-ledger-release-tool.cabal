@@ -29,6 +29,7 @@ data-files:
   test/fixtures/**/*.project
   test/fixtures/**/*.yml
   test/fixtures/**/plutus-debug
+  test/fixtures/**/tests
 
 common language
   default-language: Haskell2010

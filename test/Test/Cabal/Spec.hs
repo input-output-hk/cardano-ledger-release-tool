@@ -40,6 +40,12 @@ spec = do
     withTempProject projectFixture $ \projectDir -> do
       actual <- T.pack <$> readProcess "cleret" ["cabal", "run", "-p", projectDir, "plutus-debug"] ""
       goldenTest expected actual
+  specify "test" $ do
+    projectFixture <- fixturePath "Cabal"
+    expected <- fixturePath "Cabal/test.golden"
+    withTempProject projectFixture $ \projectDir -> do
+      actual <- T.pack <$> readProcess "cleret" ["cabal", "test", "-p", projectDir, "cardano-ledger-core"] ""
+      goldenTest expected actual
 
 withTempProject :: FilePath -> (FilePath -> IO ()) -> IO ()
 withTempProject projectFixture action = do
