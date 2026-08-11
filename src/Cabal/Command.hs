@@ -202,8 +202,9 @@ runComponents compTypes optCommon@Options {..} CabalOptions {..} = do
     hFlush stderr
 
   failures <- fmap sum . for bins $ \(pkgId, compName, dir, src, bin) -> do
-    absBin <- makeAbsolute bin
-    absSrc <- makeAbsolute src
+    -- If `bin` and `src` are already absolute, `rootDir` will be ignored
+    absBin <- makeAbsolute $ rootDir </> bin
+    absSrc <- makeAbsolute $ rootDir </> src
     let
       -- TODO: Figure out how to handle `data-dir` field which isn't surfaced in `plan.json`
       PkgId pkgName _ver = pkgId
@@ -212,7 +213,7 @@ runComponents compTypes optCommon@Options {..} CabalOptions {..} = do
       fixchar c = c
       -- TODO: Add other environment variables (eg `_bindir`) if needed
       extraEnv = [(varName, absSrc)]
-      cwd = if fst (unCompName compName) `elem` [CompTypeExe, CompTypeSetup] then rootDir else src
+      cwd = if fst (unCompName compName) `elem` [CompTypeExe, CompTypeSetup] then rootDir else absSrc
       binProc = (proc absBin []) {env = Just $ extraEnv <> env, cwd = Just cwd}
       name = T.unpack $ dispCompNameTargetFull pkgName compName
 
