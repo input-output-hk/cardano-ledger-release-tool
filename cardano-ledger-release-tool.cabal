@@ -115,6 +115,7 @@ test-suite golden-tests
 
   build-depends:
     base,
+    cabal-plan,
     filemanip,
     filepath,
     hspec,
