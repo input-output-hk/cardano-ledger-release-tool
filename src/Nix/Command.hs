@@ -179,7 +179,7 @@ checkInputHashes verbosity prefetch inputs = do
 checkInputHash :: Map Text Text -> Input -> Text -> IO [Failure]
 checkInputHash tokens inp expectedHash = do
   let
-    host = (inp ^. inputType) <> ".com"
+    (typ, host) = inp ^. inputTypeAndHost
     owner = inp ^. inputOwner
     repo = inp ^. inputRepo
     rev = inp ^. inputRev
@@ -195,7 +195,7 @@ checkInputHash tokens inp expectedHash = do
         _ -> error "Couldn't parse gitlab token"
 
     (archiveUrl, authType) =
-      case inp ^. inputType of
+      case typ of
         "github" ->
           ( T.intercalate
               "/"
@@ -208,7 +208,7 @@ checkInputHash tokens inp expectedHash = do
               ["https://" <> host, owner, repo, "-", "archive", rev, repo <> "-" <> rev <> ".tar.gz"]
           , gitlabAuth
           )
-        typ ->
+        _ ->
           error $ "Unknown input type: " <> T.unpack typ
 
     auth = maybe [] (map T.unpack . authType) $ Map.lookup host tokens
@@ -251,6 +251,7 @@ timed act = do
 
 data Input = Input
   { inputType_ :: !Text
+  , inputHost_ :: !(Maybe Text)
   , inputOwner_ :: !Text
   , inputRepo_ :: !Text
   , inputRev_ :: !Text
@@ -260,6 +261,9 @@ data Input = Input
 
 inputType :: Lens' Input Text
 inputType f s = (\a -> s {inputType_ = a}) <$> f (inputType_ s)
+
+inputHost :: Lens' Input (Maybe Text)
+inputHost f s = (\a -> s {inputHost_ = a}) <$> f (inputHost_ s)
 
 inputOwner :: Lens' Input Text
 inputOwner f s = (\a -> s {inputOwner_ = a}) <$> f (inputOwner_ s)
@@ -273,21 +277,40 @@ inputRev f s = (\a -> s {inputRev_ = a}) <$> f (inputRev_ s)
 inputNarHash :: Lens' Input (Maybe Text)
 inputNarHash f s = (\a -> s {inputNarHash_ = a}) <$> f (inputNarHash_ s)
 
+inputTypeAndHost :: Lens' Input (Text, Text)
+inputTypeAndHost f s = setter <$> f getter
+ where
+  getter = (s ^. inputType, s ^. inputHost . non (defaultHost s))
+  setter (t, h) = s & inputType .~ t & inputHost . non (defaultHost s) .~ h
+  defaultHost Input {inputType_ = typ}
+    | typ == "github" = "github.com"
+    | typ == "gitlab" = "gitlab.com"
+    | otherwise = typ <> ".com"
+
 -- This isn't a fully lawful lens because you may not get back out what you put in
 -- However, it does normalize URLs
 inputUrl :: Lens' Input Text
 inputUrl f s = setter s <$> f (getter s)
  where
-  getter Input {..} = "https://" <> inputType_ <> ".com/" <> inputOwner_ <> "/" <> inputRepo_ <> ".git"
-  re = (,,) <$ "https://" <*> text <* ".com/" <*> text <* "/" <*> text <* ("/" <|> ".git" <|> "")
+  re = (,,) <$ "https://" <*> text <* "/" <*> text <* "/" <*> text <* ("/" <|> ".git" <|> "")
+  getter inp = "https://" <> host <> "/" <> owner <> "/" <> repo <> ".git"
+   where
+    (_, host) = inp ^. inputTypeAndHost
+    owner = inp ^. inputOwner
+    repo = inp ^. inputRepo
   setter inp url =
     case match re . T.unpack $ url of
-      Just (t, o, r) -> inp {inputType_ = t, inputOwner_ = o, inputRepo_ = r}
+      Just (h, o, r) ->
+        let t = fromMaybe h . match (text <* "." <* text) . T.unpack $ h
+         in inp
+              & inputTypeAndHost .~ (t, h)
+              & inputOwner .~ o
+              & inputRepo .~ r
       Nothing -> inp
   text = T.pack <$> few anySym
 
 emptyInput :: Input
-emptyInput = Input "" "" "" "" Nothing
+emptyInput = Input "" Nothing "" "" "" Nothing
 
 instance ToJSON Input where
   toJSON = genericToJSON $ defaultOptions {fieldLabelModifier = relabel "input"}

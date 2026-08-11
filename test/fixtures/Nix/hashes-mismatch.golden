@@ -4,3 +4,6 @@ Hash mismatch for https://github.com/input-output-hk/cardano-ledger-release-tool
 Hash mismatch for https://github.com/input-output-hk/constrained-generators.git@966f65f3c28cb22fc45220dbd1408baea93b53d8:
   Specified: sha256-g0bJTwdfJG84XrERJJoBBi5ZzRHgeVoZWS2yW/z7LiU=
      Actual: sha256-h0bJTwdfJG84XrERJJoBBi5ZzRHgeVoZWS2yW/z7LiU=
+Hash mismatch for https://gitlab.haskell.org/ghc/head.hackage.git@a50bec6c7722f774415bc0f0a0e64f6e2b8989b7:
+  Specified: sha256-nifEa/JYg8ZLUtkbM8HVzKmqCcT9QxaDmG0ex2qT0Ng=
+     Actual: sha256-oifEa/JYg8ZLUtkbM8HVzKmqCcT9QxaDmG0ex2qT0Ng=
