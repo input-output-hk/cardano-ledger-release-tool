@@ -3,9 +3,10 @@
 module Test.Cabal.Spec where
 
 import Cabal.Plan (SearchPlanJson (ProjectRelativeToDir), findPlanJson)
+import System.Exit (ExitCode (..))
 import System.FilePath (takeFileName, (</>))
 import System.IO.Temp (withSystemTempDirectory)
-import System.Process (callProcess, readProcess)
+import System.Process (callProcess, readProcess, readProcessWithExitCode)
 import Test.Common.Fixture (fixturePath)
 import Test.Common.Golden (goldenTest)
 import Test.Hspec
@@ -40,12 +41,26 @@ spec = do
     withTempProject projectFixture $ \projectDir -> do
       actual <- T.pack <$> readProcess "cleret" ["cabal", "run", "-p", projectDir, "plutus-debug"] ""
       goldenTest expected actual
-  specify "test" $ do
-    projectFixture <- fixturePath "Cabal"
-    expected <- fixturePath "Cabal/test.golden"
-    withTempProject projectFixture $ \projectDir -> do
-      actual <- T.pack <$> readProcess "cleret" ["cabal", "test", "-p", projectDir, "cardano-ledger-core"] ""
-      goldenTest expected actual
+  describe "test" $ do
+    specify "success" $ do
+      projectFixture <- fixturePath "Cabal"
+      expected <- fixturePath "Cabal/test/success.golden"
+      withTempProject projectFixture $ \projectDir -> do
+        actual <- T.pack <$> readProcess "cleret" ["cabal", "test", "-p", projectDir, "cardano-ledger-core"] ""
+        goldenTest expected actual
+    specify "failures" $ do
+      projectFixture <- fixturePath "Cabal"
+      expected <- fixturePath "Cabal/test/failures.golden"
+      withTempProject projectFixture $ \projectDir -> do
+        let eras = ["shelley", "allegra", "mary", "alonzo", "babbage", "conway"]
+        (code, out, err) <-
+          readProcessWithExitCode
+            "cleret"
+            (["cabal", "test", "-p", projectDir] <> ["cardano-ledger-" <> era | era <- eras])
+            ""
+        code `shouldNotBe` ExitSuccess
+        out `shouldBe` ""
+        goldenTest expected $ T.pack err
 
 withTempProject :: FilePath -> (FilePath -> IO ()) -> IO ()
 withTempProject projectFixture action = do

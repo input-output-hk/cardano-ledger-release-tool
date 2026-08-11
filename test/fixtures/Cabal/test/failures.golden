@@ -1,0 +1,9 @@
+Running cardano-ledger-allegra:test:tests
+Running cardano-ledger-alonzo:test:tests
+Running cardano-ledger-babbage:test:tests
+cardano-ledger-babbage:test:tests failed with exit code 1
+Running cardano-ledger-conway:test:tests
+Running cardano-ledger-mary:test:tests
+cardano-ledger-mary:test:tests failed with exit code 1
+Running cardano-ledger-shelley:test:tests
+There were 2 failures
