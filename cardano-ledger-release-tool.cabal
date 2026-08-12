@@ -104,6 +104,8 @@ test-suite tests
   hs-source-dirs: src
   main-is: test-main.hs
   other-modules:
+    Common.Options
+    Nix.Command
     Test.Cabal.Spec
     Test.Changelogs.Spec
     Test.Failures.Spec
@@ -111,8 +113,23 @@ test-suite tests
     Test.Workflow.Spec
 
   build-depends:
+    aeson,
     base,
+    bytestring,
+    containers,
+    data-default,
+    directory,
+    filepath,
     hspec,
+    microlens,
+    microlens-aeson,
+    mtl,
+    optparse-applicative,
+    process,
+    regex-applicative,
+    temporary,
+    text,
+    time,
 
 test-suite golden-tests
   import: language, warnings, rts
