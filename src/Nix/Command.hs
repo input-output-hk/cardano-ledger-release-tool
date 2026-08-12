@@ -282,11 +282,14 @@ inputNarHash :: Lens' Input (Maybe Text)
 inputNarHash f s = (\a -> s {inputNarHash_ = a}) <$> f (inputNarHash_ s)
 
 inputTypeAndHost :: Lens' Input (Text, Text)
-inputTypeAndHost f s = setter <$> f getter
+inputTypeAndHost f s = setter s <$> f (getter s)
  where
-  getter = (s ^. inputType, s ^. inputHost . non (defaultHost s))
-  setter (t, h) = s & inputType .~ t & inputHost . non (defaultHost s) .~ h
-  defaultHost Input {inputType_ = typ}
+  getter i = (t, h)
+   where
+    t = i ^. inputType; h = i ^. inputHost . non (defaultHost t)
+  setter i (t, h) =
+    i & inputType .~ t & inputHost . non (defaultHost t) .~ h
+  defaultHost typ
     | typ == "github" = "github.com"
     | typ == "gitlab" = "gitlab.com"
     | otherwise = typ <> ".com"
