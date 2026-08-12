@@ -4,7 +4,7 @@
 {-# LANGUAGE RecordWildCards #-}
 {-# LANGUAGE TupleSections #-}
 
-module Nix.Command (subcmd) where
+module Nix.Command where
 
 import Common.Options (Options (..), options, subparsers)
 import Control.Monad (unless, when)
