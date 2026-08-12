@@ -21,15 +21,15 @@ extra-doc-files:
   README.md
 
 data-files:
-  test/fixtures/**/*.golden
-  test/fixtures/**/*.json
-  test/fixtures/**/*.lock
-  test/fixtures/**/*.log
-  test/fixtures/**/*.md
-  test/fixtures/**/*.project
-  test/fixtures/**/*.yml
-  test/fixtures/**/plutus-debug
-  test/fixtures/**/tests
+  golden-test/fixtures/**/*.golden
+  golden-test/fixtures/**/*.json
+  golden-test/fixtures/**/*.lock
+  golden-test/fixtures/**/*.log
+  golden-test/fixtures/**/*.md
+  golden-test/fixtures/**/*.project
+  golden-test/fixtures/**/*.yml
+  golden-test/fixtures/**/plutus-debug
+  golden-test/fixtures/**/tests
 
 common language
   default-language: Haskell2010
@@ -80,6 +80,7 @@ executable cleret
     cabal-plan,
     cmark,
     containers,
+    data-default,
     directory,
     filemanip,
     filepath,
@@ -97,10 +98,26 @@ executable cleret
     unliftio,
     yaml,
 
+test-suite tests
+  import: language, warnings, rts
+  type: exitcode-stdio-1.0
+  hs-source-dirs: src
+  main-is: test-main.hs
+  other-modules:
+    Test.Cabal.Spec
+    Test.Changelogs.Spec
+    Test.Failures.Spec
+    Test.Nix.Spec
+    Test.Workflow.Spec
+
+  build-depends:
+    base,
+    hspec,
+
 test-suite golden-tests
   import: language, warnings, rts
   type: exitcode-stdio-1.0
-  hs-source-dirs: test
+  hs-source-dirs: golden-test
   main-is: main.hs
   other-modules:
     Paths_cardano_ledger_release_tool
