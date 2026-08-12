@@ -2,6 +2,10 @@
 
 Version history for `cardano-ledger-release-tool`
 
+## 0.5.2.0
+
+* Fix a bug in handling explicit host names in Nix input URLs
+
 ## 0.5.1.0
 
 * Handle explicit host names in Nix input URLs
