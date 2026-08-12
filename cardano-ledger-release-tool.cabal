@@ -98,6 +98,22 @@ executable cleret
     unliftio,
     yaml,
 
+test-suite tests
+  import: language, warnings, rts
+  type: exitcode-stdio-1.0
+  hs-source-dirs: src
+  main-is: test-main.hs
+  other-modules:
+    Test.Cabal.Spec
+    Test.Changelogs.Spec
+    Test.Failures.Spec
+    Test.Nix.Spec
+    Test.Workflow.Spec
+
+  build-depends:
+    base,
+    hspec,
+
 test-suite golden-tests
   import: language, warnings, rts
   type: exitcode-stdio-1.0
