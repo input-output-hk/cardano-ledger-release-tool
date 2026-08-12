@@ -2,6 +2,12 @@
 
 Version history for `cardano-ledger-release-tool`
 
+## 0.5.1.0
+
+* Handle explicit host names in Nix input URLs
+* Add logging in `cleret cabal test`
+* Continue if an exe or test fails in `cleret cabal {test,run}`
+
 ## 0.5.0.0
 
 * Add the `cabal relativize-plan` subcommand
