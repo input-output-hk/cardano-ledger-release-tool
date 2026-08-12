@@ -13,6 +13,7 @@ import Control.Monad.IO.Class (liftIO)
 import Data.Aeson (FromJSON (..), ToJSON (..), defaultOptions, fieldLabelModifier, genericParseJSON, genericToJSON)
 import Data.ByteString (ByteString)
 import Data.Char (toLower)
+import Data.Default (Default (..))
 import Data.Foldable (for_)
 import Data.List (sortOn, stripPrefix)
 import Data.Map.Strict (Map)
@@ -125,12 +126,12 @@ parseLocks :: ByteString -> [Input]
 parseLocks = toListOf $ _Value . key "nodes" . members . key "locked" . _JSON
 
 parseSrps :: Text -> [Input]
-parseSrps = snd . foldr go (emptyInput, []) . T.lines
+parseSrps = snd . foldr go (def, []) . T.lines
  where
   go l (cur, rest) =
     case T.words l of
       kw : _
-        | kw == "source-repository-package" -> (emptyInput, cur : rest)
+        | kw == "source-repository-package" -> (def, cur : rest)
       kw : val : _
         | kw == "location:" -> (cur & inputUrl .~ val, rest)
         | kw == "tag:" -> (cur & inputRev .~ val, rest)
@@ -259,6 +260,9 @@ data Input = Input
   }
   deriving (Eq, Ord, Show, Generic)
 
+instance Default Input where
+  def = Input "" Nothing "" "" "" Nothing
+
 inputType :: Lens' Input Text
 inputType f s = (\a -> s {inputType_ = a}) <$> f (inputType_ s)
 
@@ -308,9 +312,6 @@ inputUrl f s = setter s <$> f (getter s)
               & inputRepo .~ r
       Nothing -> inp
   text = T.pack <$> few anySym
-
-emptyInput :: Input
-emptyInput = Input "" Nothing "" "" "" Nothing
 
 instance ToJSON Input where
   toJSON = genericToJSON $ defaultOptions {fieldLabelModifier = relabel "input"}

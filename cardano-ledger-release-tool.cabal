@@ -80,6 +80,7 @@ executable cleret
     cabal-plan,
     cmark,
     containers,
+    data-default,
     directory,
     filemanip,
     filepath,
