@@ -1,6 +1,6 @@
 cabal-version: 3.12
 name: cardano-ledger-release-tool
-version: 0.5.2.0
+version: 0.6.0.0
 author: Neil Mayhew <neil.mayhew@iohk.io>
 copyright: 2025 IOG
 license: Apache-2.0
@@ -21,6 +21,7 @@ extra-doc-files:
   README.md
 
 data-files:
+  golden-test/fixtures/**/*.cabal
   golden-test/fixtures/**/*.golden
   golden-test/fixtures/**/*.json
   golden-test/fixtures/**/*.lock
@@ -58,8 +59,13 @@ executable cleret
   other-modules:
     Cabal.Command
     Changelogs.Command
-    Changelogs.Types
+    Changelogs.Core
+    Changelogs.Versions
+    Common.Color
+    Common.Git
     Common.Options
+    Common.Packages
+    Common.Version
     Failures.Command
     Failures.Extract
     Failures.LogResults
@@ -67,6 +73,10 @@ executable cleret
     Failures.Render
     Nix.Command
     PackageInfo_cardano_ledger_release_tool
+    Release.Chap
+    Release.Command
+    Release.Meta
+    Release.Tags
     Workflow.Command
 
   autogen-modules:
@@ -95,6 +105,7 @@ executable cleret
     terminal-size,
     text,
     time,
+    tomland,
     unliftio,
     yaml,
 
@@ -106,10 +117,13 @@ test-suite tests
   other-modules:
     Common.Options
     Nix.Command
+    Release.Meta
+    Release.Tags
     Test.Cabal.Spec
     Test.Changelogs.Spec
     Test.Failures.Spec
     Test.Nix.Spec
+    Test.Release.Spec
     Test.Workflow.Spec
 
   build-depends:
@@ -130,6 +144,7 @@ test-suite tests
     temporary,
     text,
     time,
+    tomland,
 
 test-suite golden-tests
   import: language, warnings, rts
