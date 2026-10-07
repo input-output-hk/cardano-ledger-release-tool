@@ -1,22 +1,32 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Changelogs.Types (
-  Changelog (..),
+module Changelogs.Core (
+  Changelog,
+  ChangelogError (..),
+  Unreleased (..),
   parseChangelog,
   renderChangelog,
+  readChangelog,
+  releaseVersions,
+  topRelease,
 ) where
 
 import CMark
 import Control.Monad ((<=<), (>=>))
 import Control.Monad.Except (Except, runExcept, throwError)
+import Data.Bifunctor (first)
 import Data.Char (isDigit)
 import Data.List (sortOn)
+import Data.Text.Encoding (decodeUtf8')
 import Data.Text.Lazy (Text, unpack)
 import Data.Version (Version, parseVersion, showVersion)
+import System.IO.Error (isDoesNotExistError)
 import Text.ParserCombinators.ReadP (readP_to_S)
 import Text.Pretty.Simple (pShowNoColor)
+import UnliftIO.Exception (Exception (fromException), SomeException, displayException, tryAny)
 
+import qualified Data.ByteString as BS
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
 
@@ -103,8 +113,8 @@ newtype Entry = Entry
   }
   deriving (Eq, Ord, Show)
 
-parseChangelog :: Text -> Either Text Changelog
-parseChangelog = runExcept . (makeChangeLog <=< buildSections . commonmarkToNode [] . TL.toStrict)
+parseChangelog :: T.Text -> Either Text Changelog
+parseChangelog = runExcept . (makeChangeLog <=< buildSections . commonmarkToNode [])
 
 renderChangelog :: Text -> Changelog -> Text
 renderChangelog bullets = fixMarkdownStyle bullets . TL.fromStrict . nodeToCommonmark [] Nothing . unbuildSections . unmakeChangelog
@@ -225,3 +235,59 @@ fixMarkdownStyle bullets = TL.unlines . fixup . TL.lines
   fixEmptyListItems l = if l == "* " then ["*", ""] else [l]
   -- See https://github.com/commonmark/cmark/pull/372
   fixHtmlComments l = [l | TL.strip l /= "<!-- end list -->"]
+
+-- | Why a CHANGELOG.md could not be turned into a 'Changelog'.
+data ChangelogError
+  = -- | The file does not exist.
+    ChangelogMissing
+  | -- | The file exists, but could not be read or decoded.
+    ChangelogUnreadable Text
+  | -- | The file was read, but is not in the canonical layout.
+    ChangelogUnparseable Text
+
+{- | Read and parse a CHANGELOG.md file, decoded as UTF-8.
+
+The file is read strictly so that a read or decoding failure is caught here.
+-}
+readChangelog :: FilePath -> IO (Either ChangelogError Changelog)
+readChangelog fp = do
+  result <- tryAny $ BS.readFile fp
+  pure $ do
+    bytes <- first readFailure result
+    content <- first unreadable $ decodeUtf8' bytes
+    first ChangelogUnparseable $ parseChangelog content
+ where
+  readFailure :: SomeException -> ChangelogError
+  readFailure e =
+    if maybe False isDoesNotExistError (fromException e)
+      then ChangelogMissing
+      else unreadable e
+
+  unreadable :: Exception e => e -> ChangelogError
+  unreadable = ChangelogUnreadable . TL.pack . displayException
+
+-- | Every version that has a section in the changelog, in the order they appear.
+releaseVersions :: Changelog -> [Version]
+releaseVersions = map releaseNumber . changelogReleases
+
+data Unreleased = Unreleased
+  { unreleasedVersion :: Version
+  , unreleasedIsEmpty :: Bool
+  -- ^ Whether the section has no content - the @*@ placeholder fits here too.
+  }
+
+{- | Get the topmost release from a changelog, if any. This is the most recent
+section, which the version checks compare the cabal version against.
+-}
+topRelease :: Changelog -> Maybe Unreleased
+topRelease cl = case changelogReleases cl of
+  [] -> Nothing
+  (r : _) ->
+    Just
+      Unreleased
+        { unreleasedVersion = releaseNumber r
+        , unreleasedIsEmpty =
+            null (releasePreamble r)
+              && all (null . unEntry) (releaseEntries r)
+              && null (releaseSublibs r)
+        }
