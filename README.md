@@ -43,6 +43,7 @@ Available commands:
   changelogs               Operations on the changelogs of a project
   failures                 Examine and summarize failures in Cabal test logs
   nix                      Operations on the nix information of a Cabal project
+  release                  Release workflow for CHaP publishing
   workflow                 Operations on the GitHub workflows of a Cabal project
 ```
 
@@ -156,8 +157,38 @@ Available options:
   -h,--help                Show this help text
 
 Available commands:
+  check-versions           Check that cabal package versions match their changelog versions
   format                   Parse and reformat changelog files
 ```
+
+#### `changelogs check-versions`
+
+```
+Usage: cleret changelogs check-versions [-p|--project DIR]
+
+  Check that cabal package versions match their changelog versions
+
+Available options:
+  -h,--help                Show this help text
+  -p,--project DIR         Check only the packages under DIR (default: the repository root)
+```
+
+Checks that every package's Cabal version agrees with its `CHANGELOG.md`, which
+is the authority on the intended version. The top section of the changelog is
+taken as that version, and it is an error if:
+
+1. a later section has a higher version than the top one;
+2. the Cabal version is ahead of the top section;
+3. the Cabal version has no section in the changelog;
+4. the top section has entries, but the Cabal version does not match it;
+5. the top section is an empty placeholder (a lone `*`, as left by
+   `release post`), but the Cabal version has been moved onto it. The Cabal
+   version must stay on the released version until a change is recorded.
+
+Packages with no `CHANGELOG.md`, and those versioned `9.9.9.9` (excluded from
+releases), are skipped. A `.cabal` file that cannot be read or has no version,
+and a changelog that cannot be read, is not in the canonical layout accepted by
+`changelogs format`, or names no version at all, are also reported as errors.
 
 #### `changelogs format`
 
@@ -269,6 +300,101 @@ Available options:
 Relevant authentication tokens found in the nix configuration will be used when
 prefetching, in case any of the inputs are private
 ```
+
+### `release`
+
+```
+Usage: cleret release COMMAND
+
+  Release workflow for CHaP publishing
+
+Available options:
+  -h,--help                Show this help text
+
+Available commands:
+  check                    Identify packages needing release and output the CHaP command
+  post                     Create tags, bump changelogs, and create follow-up PR after CHaP release
+```
+
+Drives the two halves of a
+[CHaP](https://github.com/IntersectMBO/cardano-haskell-packages) release. First
+`release check` reports which packages need publishing and prints the command
+to run against CHaP. Once the CHaP PR is merged, `release post` tags the
+published versions and refreshes the changelogs for the follow-up PR.
+
+Both commands fetch `origin` first and refuse to run unless `HEAD` is exactly
+the tip of origin's default branch (`origin/master`, or whatever `origin/HEAD`
+names). `release check` prints a command that publishes `HEAD`, and
+`release post` edits changelogs that may already have been bumped upstream;
+neither makes sense from a stale checkout.
+
+#### `release check`
+
+```
+Usage: cleret release check [--dry-run] [--repo-url URL]
+
+  Identify packages needing release and output the CHaP command
+
+Available options:
+  -h,--help                Show this help text
+  --dry-run                Use local git tags instead of querying CHaP API
+  --repo-url URL           Override repository URL (auto-detected from git remote)
+```
+
+Compares each package's Cabal version against the version published on CHaP and
+lists those that are ahead, and so ready to release. The packages about to be
+released get the same checks as `changelogs check-versions`, so a Cabal version
+moved onto an empty top changelog section blocks the release rather than
+publishing a version with no recorded change. For the ready packages it
+prints the `add-from-github.sh` invocation to run from the
+`cardano-haskell-packages` repository, then reminds you to run `release post`
+once that PR is merged.
+
+#### `release post`
+
+```
+Usage: cleret release post [--apply] [--push]
+
+  Create tags, bump changelogs, and create follow-up PR after CHaP release
+
+Available options:
+  -h,--help                Show this help text
+  --apply                  Actually execute changes (default is dry-run)
+  --push                   Push tags to origin (only under --apply; otherwise the git push
+                           commands are printed)
+```
+
+Run after the CHaP PR is merged. For every package published on CHaP it reads
+the commit that CHaP recorded for the package's latest version (the `rev` in
+`_sources/<package>/<version>/meta.toml`) and:
+
+- tags that commit as `<package>-<version>`, and
+- adds an empty changelog entry above the last published version, but only for
+  packages whose released version is still at the top of the changelog.
+  Packages that already have an unreleased entry above their published version
+  are left untouched, so in practice only the just-published packages are
+  affected. Cabal versions are not modified.
+
+Each package is tagged at its own recorded commit, so it does not matter whether
+the release spans several commits or some packages were last published long
+ago. The `meta.toml` must also name the directory the package lived in at that
+commit; otherwise it is an error.
+
+Existing tags are verified rather than trusted. A tag already at the recorded
+commit, locally or on `origin`, is kept (fetched if it only exists on `origin`,
+pushed if it only exists locally); a tag anywhere else is an error that names
+the commit it points to and the command that removes it. The tool never moves
+or force-pushes a tag. All problems are collected and reported together, and
+nothing is changed while any remain; the dry run shows the same analysis.
+
+The changed changelogs are left in the working tree, and the command prints the
+git commands to commit them on a branch and open the follow-up PR. `release
+post` is a dry-run by default; pass `--apply` to make changes. Without `--push`
+it prints the `git push` commands for the tags instead of running them; with
+`--push` (only meaningful under `--apply`) it pushes the tags itself. Re-running
+is safe: tags already at the recorded commit and existing changelog entries are
+detected and skipped, and an already-correct changelog with uncommitted changes
+is still listed for the follow-up commit.
 
 ### `workflow`
 

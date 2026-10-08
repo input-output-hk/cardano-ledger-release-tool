@@ -1,0 +1,9 @@
+Error: bad-cabal/bad-cabal.cabal: no 'version:' field found
+Error: cabal-ahead: cabal version 2.0.0.0 is ahead of cabal-ahead/CHANGELOG.md, whose most recent section is 1.1.0.0 - set the cabal version to 1.1.0.0, or add the missing section
+Error: cabal-ahead-of-placeholder: cabal version 2.0.0.0 is ahead of cabal-ahead-of-placeholder/CHANGELOG.md, whose most recent section 1.0.0.1 has no entries - add a section for 2.0.0.0 recording the change, or set the cabal version back to the version that was released
+Error: cabal-behind: cabal version is 1.0.0.0, but cabal-behind/CHANGELOG.md has entries under 1.1.0.0 - bump the cabal version to 1.1.0.0
+Error: cabal-not-in-changelog: cabal version 1.0.0.0 has no section in cabal-not-in-changelog/CHANGELOG.md
+Error: cabal-on-placeholder: cabal version is 1.3.0.1, but cabal-on-placeholder/CHANGELOG.md has no entries under 1.3.0.1 - either record the change under 1.3.0.1, or leave the cabal version on the version that was released
+Error: no-versions: no version heading in no-versions/CHANGELOG.md
+Error: non-canonical: could not parse non-canonical/CHANGELOG.md (see `cleret changelogs format`)
+Error: top-not-highest: top section of top-not-highest/CHANGELOG.md is 1.2.0.0, but a later section has a higher version, 1.3.0.0

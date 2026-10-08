@@ -6,6 +6,7 @@ import qualified Test.Cabal.Spec as Cabal
 import qualified Test.Changelogs.Spec as Changelogs
 import qualified Test.Failures.Spec as Failures
 import qualified Test.Nix.Spec as Nix
+import qualified Test.Release.Spec as Release
 import qualified Test.Workflow.Spec as Workflow
 
 main :: IO ()
@@ -14,4 +15,5 @@ main = hspec $ do
   describe "changelogs" Changelogs.spec
   describe "failures" Failures.spec
   describe "nix" Nix.spec
+  describe "release" Release.spec
   describe "workflow" Workflow.spec

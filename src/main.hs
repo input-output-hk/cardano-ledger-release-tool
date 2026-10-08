@@ -10,6 +10,7 @@ import qualified Cabal.Command as Cabal
 import qualified Changelogs.Command as Changelogs
 import qualified Failures.Command as Failures
 import qualified Nix.Command as Nix
+import qualified Release.Command as Release
 import qualified System.Console.Terminal.Size as TS
 import qualified Workflow.Command as Workflow
 
@@ -34,6 +35,7 @@ main = do
             , Changelogs.subcmd
             , Failures.subcmd
             , Nix.subcmd
+            , Release.subcmd
             , Workflow.subcmd
             ]
       )

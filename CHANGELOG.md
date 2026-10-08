@@ -2,6 +2,13 @@
 
 Version history for `cardano-ledger-release-tool`
 
+## 0.6.0.0
+
+* Add a `release` group of subcommands: `check` and `post`
+  - `release post` tags each package at the commit CHaP records for it and refuses to proceed
+    if an existing tag points elsewhere
+* Add the `changelogs check-versions` subcommand
+
 ## 0.5.2.0
 
 * Fix a bug in handling explicit host names in Nix input URLs

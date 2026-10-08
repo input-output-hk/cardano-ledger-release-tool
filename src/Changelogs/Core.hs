@@ -1,24 +1,38 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RecordWildCards #-}
 
-module Changelogs.Types (
-  Changelog (..),
+module Changelogs.Core (
+  Changelog,
+  ChangelogError (..),
+  Unreleased (..),
   parseChangelog,
   renderChangelog,
+  readChangelog,
+  writeChangelog,
+  releaseVersions,
+  topRelease,
+  ensureEmptyRelease,
 ) where
 
 import CMark
 import Control.Monad ((<=<), (>=>))
 import Control.Monad.Except (Except, runExcept, throwError)
+import Data.Bifunctor (first)
 import Data.Char (isDigit)
 import Data.List (sortOn)
+import Data.Text.Encoding (decodeUtf8')
 import Data.Text.Lazy (Text, unpack)
 import Data.Version (Version, parseVersion, showVersion)
+import System.Directory (doesFileExist)
 import Text.ParserCombinators.ReadP (readP_to_S)
 import Text.Pretty.Simple (pShowNoColor)
+import UnliftIO.Exception (Exception, displayException, tryAny)
 
+import qualified Data.ByteString as BS
+import qualified Data.ByteString.Lazy as BL
 import qualified Data.Text as T
 import qualified Data.Text.Lazy as TL
+import qualified Data.Text.Lazy.Encoding as TL
 
 -- CMark helper functions
 
@@ -103,8 +117,8 @@ newtype Entry = Entry
   }
   deriving (Eq, Ord, Show)
 
-parseChangelog :: Text -> Either Text Changelog
-parseChangelog = runExcept . (makeChangeLog <=< buildSections . commonmarkToNode [] . TL.toStrict)
+parseChangelog :: T.Text -> Either Text Changelog
+parseChangelog = runExcept . (makeChangeLog <=< buildSections . commonmarkToNode [])
 
 renderChangelog :: Text -> Changelog -> Text
 renderChangelog bullets = fixMarkdownStyle bullets . TL.fromStrict . nodeToCommonmark [] Nothing . unbuildSections . unmakeChangelog
@@ -225,3 +239,85 @@ fixMarkdownStyle bullets = TL.unlines . fixup . TL.lines
   fixEmptyListItems l = if l == "* " then ["*", ""] else [l]
   -- See https://github.com/commonmark/cmark/pull/372
   fixHtmlComments l = [l | TL.strip l /= "<!-- end list -->"]
+
+-- IO helpers
+
+-- | Why a CHANGELOG.md could not be turned into a 'Changelog'.
+data ChangelogError
+  = -- | The file does not exist.
+    ChangelogMissing
+  | -- | The file exists, but could not be read or decoded.
+    ChangelogUnreadable Text
+  | -- | The file was read, but is not in the canonical layout.
+    ChangelogUnparseable Text
+
+{- | Read and parse a CHANGELOG.md file, which is decoded as UTF-8.
+
+The file is read strictly so that a read or decoding failure is caught here,
+rather than escaping later while the text is parsed.
+-}
+readChangelog :: FilePath -> IO (Either ChangelogError Changelog)
+readChangelog fp = do
+  exists <- doesFileExist fp
+  if not exists
+    then pure (Left ChangelogMissing)
+    else do
+      result <- tryAny $ BS.readFile fp
+      pure $ do
+        bytes <- first unreadable result
+        content <- first unreadable $ decodeUtf8' bytes
+        first ChangelogUnparseable $ parseChangelog content
+ where
+  unreadable :: Exception e => e -> ChangelogError
+  unreadable = ChangelogUnreadable . TL.pack . displayException
+
+-- | Render a changelog with the given bullet characters, and write it as UTF-8.
+writeChangelog :: FilePath -> Text -> Changelog -> IO ()
+writeChangelog fp bullets = BL.writeFile fp . TL.encodeUtf8 . renderChangelog bullets
+
+-- | Every version that has a section in the changelog, in the order they appear.
+releaseVersions :: Changelog -> [Version]
+releaseVersions = map releaseNumber . changelogReleases
+
+data Unreleased = Unreleased
+  { unreleasedVersion :: Version
+  , unreleasedIsEmpty :: Bool
+  {- ^ Whether the section has no content, as opposed to holding entries: the
+  lone @*@ placeholder that 'ensureEmptyRelease' leaves behind when
+  @release post@ runs after a release.
+  -}
+  }
+
+{- | Get the topmost release from a changelog, if any. This is the most recent
+section, which the version checks take as the intended version.
+-}
+topRelease :: Changelog -> Maybe Unreleased
+topRelease cl = case changelogReleases cl of
+  [] -> Nothing
+  (r : _) ->
+    Just
+      Unreleased
+        { unreleasedVersion = releaseNumber r
+        , unreleasedIsEmpty =
+            null (releasePreamble r)
+              && all (null . unEntry) (releaseEntries r)
+              && null (releaseSublibs r)
+        }
+
+{- | Ensure the changelog has an unreleased entry at the given version.
+Returns Nothing if the top release is already at or above @ver@ — i.e. there
+is already an unreleased entry above the last published version — leaving any
+in-progress entry untouched. Otherwise prepends a fresh empty entry.
+-}
+ensureEmptyRelease :: Version -> Changelog -> Maybe Changelog
+ensureEmptyRelease ver cl = case topRelease cl of
+  Just u | unreleasedVersion u >= ver -> Nothing
+  _ -> Just $ cl {changelogReleases = emptyRelease : changelogReleases cl}
+ where
+  emptyRelease =
+    Release
+      { releaseNumber = ver
+      , releasePreamble = []
+      , releaseEntries = [Entry []]
+      , releaseSublibs = []
+      }
