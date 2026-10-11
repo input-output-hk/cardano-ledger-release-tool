@@ -1,6 +1,6 @@
 cabal-version: 3.12
 name: cardano-ledger-release-tool
-version: 0.5.2.0
+version: 0.6.0.0
 author: Neil Mayhew <neil.mayhew@iohk.io>
 copyright: 2025 IOG
 license: Apache-2.0
@@ -21,6 +21,7 @@ extra-doc-files:
   README.md
 
 data-files:
+  golden-test/fixtures/**/*.cabal
   golden-test/fixtures/**/*.golden
   golden-test/fixtures/**/*.json
   golden-test/fixtures/**/*.lock
@@ -57,9 +58,12 @@ executable cleret
   main-is: main.hs
   other-modules:
     Cabal.Command
+    Changelogs.CheckVersions
     Changelogs.Command
-    Changelogs.Types
+    Changelogs.Core
     Common.Options
+    Common.Packages
+    Common.Version
     Failures.Command
     Failures.Extract
     Failures.LogResults

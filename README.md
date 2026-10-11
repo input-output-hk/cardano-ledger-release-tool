@@ -156,8 +156,40 @@ Available options:
   -h,--help                Show this help text
 
 Available commands:
+  check-versions           Check that cabal package versions match their changelog versions
   format                   Parse and reformat changelog files
 ```
+
+#### `changelogs check-versions`
+
+```
+Usage: cleret changelogs check-versions [-p|--project DIR]
+
+  Check that cabal package versions match their changelog versions
+
+Available options:
+  -h,--help                Show this help text
+  -p,--project DIR         Check only the packages under DIR (default: the repository root)
+```
+
+Checks that every package's Cabal version agrees with its `CHANGELOG.md`. The
+Cabal version decides whether a package is released: it is releasable once its
+Cabal version is higher than the highest version on CHaP. The changelog has to
+record the changes that go into that version. The Cabal version is compared
+against the top section of the changelog, and it is an error if:
+
+1. a later section has a higher version than the top one;
+2. the Cabal version is ahead of the top section;
+3. the Cabal version has no section in the changelog;
+4. the top section has entries, but the Cabal version does not match it;
+5. the top section is an empty placeholder (a lone `*`, as added after a
+   release), but the Cabal version has been moved onto it. The Cabal
+   version must stay on the released version until a change is recorded.
+
+Packages with no `CHANGELOG.md`, and those versioned `9.9.9.9` (excluded from
+releases), are skipped. A `.cabal` file that cannot be read or has no version,
+and a changelog that cannot be read, is not in the canonical layout accepted by
+`changelogs format`, or names no version at all, are also reported as errors.
 
 #### `changelogs format`
 
