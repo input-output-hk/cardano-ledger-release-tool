@@ -185,7 +185,7 @@ diff --exit-code` will determine whether the changelog needs to be changed.
 ```
 Usage: cleret failures COMMAND
 
-  Examine and summarize failures in Cabal test logs
+  Examine, summarize and reproduce failures in Cabal test logs
 
 Available options:
   -h,--help                Show this help text
@@ -193,6 +193,7 @@ Available options:
 Available commands:
   extract                  Extract failure information from Cabal test logs
   render                   Render failure information from Cabal test logs
+  reproduce                Reproduce failures extracted from Cabal test logs
 ```
 
 #### `failures extract`
@@ -235,6 +236,33 @@ Available options:
   -h,--help                Show this help text
   -v,--verbose             Increase output verbosity (repeatable)
   -o,--output FILE         Write output to FILE (default: /dev/stdout)
+  FILE ...                 JSON files containing failures
+```
+
+#### `failures reproduce`
+
+`failures reproduce` reads a set of JSON files created by `failures extract`,
+and tries to reproduce each failure locally by running `cabal test` with the
+same suite name, seed and selector.
+
+When working on a failure found in CI, the failure artifacts can be downloaded
+and `cleret failures reproduce` used repeatedly to re-test while fixing it.
+
+```
+Usage: cleret failures reproduce [-v|--verbose] [-n|--noop] [-y|--nightly] [-c|--compiler VERSION]
+                                 [-w|--working-directory DIR] [-l|--logs DIR] [FILE ...]
+
+  Reproduce failures extracted from Cabal test logs
+
+Available options:
+  -h,--help                Show this help text
+  -v,--verbose             Increase output verbosity (repeatable)
+  -n,--noop                Just show what would be done
+  -y,--nightly             Use the nightly version of each test suite
+  -c,--compiler VERSION    Select only failures that used compiler version VERSION
+  -w,--working-directory DIR
+                           Use DIR as the working directory when running tests
+  -l,--logs DIR            Save log files in DIR
   FILE ...                 JSON files containing failures
 ```
 

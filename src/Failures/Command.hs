@@ -3,6 +3,7 @@ module Failures.Command (subcmd) where
 import Common.Options (subparsers)
 import Failures.Extract (extractCmd)
 import Failures.Render (renderCmd)
+import Failures.Reproduce (reproduceCmd)
 import Options.Applicative
 
 subcmd :: Mod CommandFields (IO ())
@@ -13,6 +14,7 @@ subcmd =
           <*> subparsers
             [ extractCmd
             , renderCmd
+            , reproduceCmd
             ]
       )
-      (progDesc "Examine and summarize failures in Cabal test logs")
+      (progDesc "Examine, summarize and reproduce failures in Cabal test logs")

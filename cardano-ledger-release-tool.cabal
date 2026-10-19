@@ -65,6 +65,7 @@ executable cleret
     Failures.LogResults
     Failures.Parse
     Failures.Render
+    Failures.Reproduce
     Nix.Command
     PackageInfo_cardano_ledger_release_tool
     Workflow.Command
