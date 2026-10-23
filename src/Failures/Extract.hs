@@ -11,7 +11,7 @@ import Data.Traversable (for)
 import Failures.LogResults
 import Failures.Parse
 import Options.Applicative hiding (Failure)
-import System.Directory (doesDirectoryExist, doesFileExist)
+import System.Directory (doesDirectoryExist, doesFileExist, removePathForcibly)
 import System.Exit (die)
 import System.FilePath ((<.>), (</>))
 import System.IO (hPutStrLn, stderr)
@@ -92,7 +92,7 @@ extract Options {..} ExtractOptions {..} = do
 
   trace 1 $ show (length suiteLogs) <> " logs found"
 
-  logSuiteRuns <-
+  suiteRuns <-
     for suiteLogs $ \(suiteName, file) -> do
       suiteFailures <- do
         trace 2 $ "Examining " <> file
@@ -100,5 +100,8 @@ extract Options {..} ExtractOptions {..} = do
       pure SuiteRun {..}
 
   let PkgId _ (Ver logCompilerVersion) = pjCompilerId plan
+      logSuiteRuns = filter (not . null . suiteFailures) suiteRuns
 
-  JSON.encodeFile optOutput LogResults {..}
+  if null logSuiteRuns
+    then removePathForcibly optOutput
+    else JSON.encodeFile optOutput LogResults {..}
