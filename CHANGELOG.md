@@ -2,6 +2,10 @@
 
 Version history for `cardano-ledger-release-tool`
 
+## 0.5.2.1
+
+* Make the list of supported nix systems explicit, and drop `x86_64-darwin`
+
 ## 0.5.2.0
 
 * Fix a bug in handling explicit host names in Nix input URLs
