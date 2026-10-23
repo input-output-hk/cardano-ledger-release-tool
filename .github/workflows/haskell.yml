@@ -23,6 +23,11 @@ jobs:
     name: Build with GHC ${{ matrix.ghc }} on ${{ matrix.os }}
 
     steps:
+    - name: Use the Command Line Tools toolchain on macos
+      if: runner.os == 'macOS'
+      # See https://github.com/actions/runner-images/issues/14940
+      run: sudo xcode-select -s /Library/Developer/CommandLineTools
+
     - name: Checkout
       uses: actions/checkout@v7
 

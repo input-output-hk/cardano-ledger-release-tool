@@ -21,7 +21,8 @@
   };
 
   outputs = inputs:
-    inputs.flake-utils.lib.eachDefaultSystem (system:
+    let supportedSystems = [ "x86_64-linux" "aarch64-darwin" ];
+    in inputs.flake-utils.lib.eachSystem supportedSystems (system:
       import ./nix/outputs.nix { inherit inputs system; }
     );
 
